@@ -96,33 +96,47 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             }
             return isValid;
         }
-        public void PrintBoard(T i_CardValue,int i_row,int i_col)
+
+        public void UpdateBoard(int i_Row,int i_Col)
         {
-            StringBuilder board = new StringBuilder();
-            board.Append("    ");
+                m_GameMemoryBoard[i_Row, i_Col].IsCardOpen = true;
+        }
+        public StringBuilder PrintBoard()
+        {
+            Ex02.ConsoleUtils.Screen.Clear();
+            StringBuilder boardBase = new StringBuilder();
+            boardBase.Append("    ");
             for (int i = 0; i < m_Width; i++)
             {
-                board.Append((char)('A' + i) + "   ");
+                boardBase.Append((char)('A' + i) + "   ");
             }
-            board.AppendLine();
-            board.Append("  ");
-            board.Append('=', k_MinBoardSize * m_Width + 1).AppendLine();
+            boardBase.AppendLine();
+            boardBase.Append("  ");
+            boardBase.Append('=', k_MinBoardSize * m_Width + 1).AppendLine();
 
-            for (int i = 1; i <= m_Height; i++)
+            for (int i = 0; i < m_Height; i++)
             {
-                board.Append(i + " ");
-                for(int j=0; j<=m_Width; j++)
+                boardBase.Append(i+1 + " ");
+                for (int j = 0; j < m_Width; j++)
                 {
-                    board.Append('|');
-                    board.Append("   ");
+                    boardBase.Append('|');
+                    if (m_GameMemoryBoard[i, j].IsCardOpen)
+                    {
+                        boardBase.Append(" ");
+                        boardBase.Append(m_GameMemoryBoard[i, j].CardValue);
+                        boardBase.Append(" ");
+                    }
+                    else
+                    {
+                        boardBase.Append("   ");
+                    }
                 }
-                board.AppendLine();
-                board.Append("  ");
-                board.Append('=', k_MinBoardSize * m_Width + 1).AppendLine();
+                boardBase.Append('|');
+                boardBase.AppendLine();
+                boardBase.Append("  ");
+                boardBase.Append('=', k_MinBoardSize * m_Width + 1).AppendLine();
             }
-
-            Console.WriteLine(board);
-
+            return boardBase;
         }
 
         public eErrorType IsCellIsValid(int i_Row, int i_Col)
@@ -139,6 +153,7 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             return errorType;
 
         }
+
         public bool IsCellIsOpen(int i_Row,int i_Col)
         {
             return m_GameMemoryBoard[i_Row, i_Col].IsCardOpen;
