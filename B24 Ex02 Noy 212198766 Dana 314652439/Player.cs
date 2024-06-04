@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace B24_Ex02_Noy_212198766_Dana_314652439
 {
-    internal class Player
+    public class Player
     {
         string m_Name;
         int m_Score;

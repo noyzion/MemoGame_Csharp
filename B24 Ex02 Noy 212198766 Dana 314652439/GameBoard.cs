@@ -55,7 +55,6 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
                 m_Height = value.height;
                 m_Width = value.width;
                 m_GameMemoryBoard = new Card[value.height, value.width];
-                FillBoardWithValues();
             }
         }
 
@@ -84,13 +83,12 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             }
         }
 
-        public void UpdateBoard(int i_Row, int i_Col)
+        public void UpdateBoard(int[] i_Card ,bool i_IsCardOpen)
         {
-            m_GameMemoryBoard[i_Row, i_Col].IsCardOpen = true;
+            m_GameMemoryBoard[i_Card[1], i_Card[0]].IsCardOpen = i_IsCardOpen;
         }
         public StringBuilder BuildBoard()
         {
-            Ex02.ConsoleUtils.Screen.Clear();
             StringBuilder boardBase = new StringBuilder();
             boardBase.Append("    ");
             for (int i = 0; i < m_Width; i++)
@@ -129,11 +127,11 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
         public eErrorType IsCellIsValid(int[] i_Card)
         {
             eErrorType errorType = eErrorType.NoError;
-            if (!IsCellIsOpen(i_Card))
+            if  (!IsCellIsInBounds(i_Card))
             {
-                errorType = eErrorType.FullCell;
+                errorType = eErrorType.OutOfBounds;
             }
-            else if (!IsCellIsInBounds(i_Card))
+            else if (!IsCellIsOpen(i_Card))
             {
                 errorType = eErrorType.NoSuchCell;
             }
@@ -157,16 +155,16 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             return m_GameMemoryBoard[i_Card[1], i_Card[0]].CardValue;
         }
 
-        public bool IsBoardFull()
+        public eGameConfig IsBoardFull()
         {
-            bool isBoardFull = true;
+            eGameConfig isBoardFull = eGameConfig.EndGame;
             for (int i = 0; i < m_Height; i++)
             {
                 for (int j = 0; j < m_Width; j++)
                 {
                     if (!m_GameMemoryBoard[i, j].IsCardOpen)
                     {
-                        isBoardFull = false;
+                        isBoardFull = eGameConfig.CountinueGame;
                     }
                 }
             }

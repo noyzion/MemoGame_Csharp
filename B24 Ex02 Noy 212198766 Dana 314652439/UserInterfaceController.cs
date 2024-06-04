@@ -117,7 +117,7 @@ namespace Ex02
 
         public bool IsOneOrTwoValidCheck(int i_userInput)
         {
-            return (i_userInput != 1 && i_userInput != 2);
+            return (i_userInput == 1 || i_userInput == 2);
         }
 
         public int AskIfThePlayerWantAnotherGame()
@@ -136,20 +136,24 @@ namespace Ex02
 
         public int[] GetNextCard()
         {
-            int[] cardValues = new int[1];
+            int[] cardValues = new int[2];
             Console.WriteLine("It's your turn!");
             Console.Write("Please enter the next card: ");
             string card = Console.ReadLine();
             if (!IsValidCard(card))
             {
+                PrintError(eErrorType.InvalidInput); 
                 GetNextCard();
             }
             cardValues[0] = char.Parse(card[0].ToString()) - 'A';
             cardValues[1] = int.Parse(card[1].ToString());
-            if (m_MemoGameBoard.IsCellIsValid(cardValues) != eErrorType.NoError)
+            eErrorType isCellValid = m_MemoGameBoard.IsCellIsValid(cardValues);
+            if(isCellValid != eErrorType.NoError)
             {
+                PrintError(isCellValid);
                 GetNextCard();
             }
+
             return cardValues; 
         }
         public bool IsValidCard(string i_card)
@@ -175,26 +179,76 @@ namespace Ex02
             m_FirstPlayer.Name = GetPlayerName();
             int ComputerOrHuman = GetAndCheckIfSecondPlayerCompOrHuman();
 
-            if (ComputerOrHuman == (int)eGameConfig.Computer)
-            {
-                m_SecondPlayer.Name = "Computer";
-            }
-            else
+            if (ComputerOrHuman == (int)eGameConfig.Human)
             {
                 m_SecondPlayer.Name = GetPlayerName();
             }
+            else
+            {
+                m_SecondPlayer.Name = "Computer";
+            }
 
             GetBoardBounds();
+            char[] array = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
+            m_MemoGameBoard.GetValuesForTheBoard(array);
+            m_MemoGameBoard.FillBoardWithValues();
             Console.WriteLine(m_MemoGameBoard.BuildBoard());
-            m_FirstPlayer.FirstCard = GetNextCard();
-            m_FirstPlayer.SecondCard = GetNextCard();
-            char firstCardValue = m_MemoGameBoard.GetValueFromCellInBoard(m_FirstPlayer.FirstCard);
-            char secondCardValue = m_MemoGameBoard.GetValueFromCellInBoard(m_FirstPlayer.SecondCard);
-            m_GameLogic.CheckPlayerTurn(m_FirstPlayer,firstCardValue, secondCardValue);
 
+            m_FirstPlayer.IsMyTurn = true;
+            if (m_FirstPlayer.IsMyTurn)
+            {
+                PlayerTurn(m_FirstPlayer);
+                m_SecondPlayer.IsMyTurn = true;
+            }
+            if(m_SecondPlayer.IsMyTurn)
+            {
+                PlayerTurn(m_SecondPlayer);
+                m_FirstPlayer.IsMyTurn = true;
+            }
 
 
         }
-    }
 
+        public eGameConfig PlayerTurn(Player i_player)
+        {
+            eGameConfig fullBoard = m_MemoGameBoard.IsBoardFull();
+
+            if (fullBoard == eGameConfig.CountinueGame)
+            {
+                i_player.FirstCard = GetNextCard();
+                Ex02.ConsoleUtils.Screen.Clear();
+
+                m_MemoGameBoard.UpdateBoard(i_player.FirstCard,true);
+                Console.WriteLine(m_MemoGameBoard.BuildBoard());
+
+                i_player.SecondCard = GetNextCard();
+
+                Ex02.ConsoleUtils.Screen.Clear();
+                m_MemoGameBoard.UpdateBoard(i_player.SecondCard,true);
+
+
+
+                char firstCardValue = m_MemoGameBoard.GetValueFromCellInBoard(i_player.FirstCard);
+                char secondCardValue = m_MemoGameBoard.GetValueFromCellInBoard(i_player.SecondCard);
+                m_GameLogic.CheckPlayerTurn(i_player, firstCardValue, secondCardValue);
+
+                if (i_player.IsMyTurn)
+                {
+                    Console.WriteLine(m_MemoGameBoard.BuildBoard());
+                    PlayerTurn(i_player);
+                }
+                else
+                {
+                    Console.WriteLine(m_MemoGameBoard.BuildBoard());
+                    System.Threading.Thread.Sleep(2);
+                    m_MemoGameBoard.UpdateBoard(i_player.SecondCard, false);
+                    Console.WriteLine(m_MemoGameBoard.BuildBoard());
+                    i_player.IsMyTurn = false;
+                }
+            }
+            return fullBoard;
+        }
+
+
+    }
 }
