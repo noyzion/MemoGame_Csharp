@@ -12,7 +12,10 @@ namespace Ex02
         OutOfBounds,
         OddSize,
         FullCell,
-        NoSuchCell
+        NoSuchCell,
+        NotAnInteger,
+        InvalidInput,
+        NotALetter
 
     }
 }
