@@ -12,13 +12,16 @@ namespace Ex02
         private const int k_MaxBoardSize = 6;
         private const int k_MinBoardSize = 4;
         GameBoard<char> m_MemoGameBoard = new GameBoard<char>();
+        GameLogic<char> m_GameLogic = new GameLogic<char>();
+        Player m_FirstPlayer = new Player();
+        Player m_SecondPlayer = new Player();
+
         public string GetPlayerName()
         {
-            Console.WriteLine("Please enter your name: ");
+            Console.Write("Please enter your name: ");
             string playerName = Console.ReadLine();
             return playerName;
         }
-
         public void GetBoardBounds()
         {
             Console.Write("Please enter the board width: ");
@@ -37,19 +40,16 @@ namespace Ex02
                 PrintError(eErrorType.OutOfBounds);
                 GetBoardBounds();
             }
-            if ( m_MemoGameBoard.CheckParityBounds() != eErrorType.NoError)
+            if (m_MemoGameBoard.CheckParityBounds() != eErrorType.NoError)
             {
                 PrintError(eErrorType.OddSize);
                 GetBoardBounds();
             }
-
         }
-
         public eErrorType CheckIfIntegers(string i_Width, string i_Height)
         {
-            int boardWidth, boardHeight;
             eErrorType errorType = eErrorType.NoError;
-            if (!(int.TryParse(i_Width, out boardWidth) && int.TryParse(i_Height, out boardHeight)))
+            if (!(int.TryParse(i_Width, out int boardWidth) && int.TryParse(i_Height, out int boardHeight)))
             {
                 errorType = eErrorType.NotAnInteger;
             }
@@ -98,13 +98,14 @@ namespace Ex02
             }
 
         }
-    
+
         public int GetAndCheckIfSecondPlayerCompOrHuman()
         {
+
             Console.WriteLine("Would you like to compete against another human " +
-                               "player or against the computer?");
-            Console.WriteLine("If your choice is human, please press 1");
-            Console.WriteLine("If your choice is computer, please press 2");
+                               "or against the computer?");
+            Console.WriteLine("(1) Computer");
+            Console.WriteLine("(2) Human");
             int playerOrComp = int.Parse(Console.ReadLine());
             if (!IsOneOrTwoValidCheck(playerOrComp))
             {
@@ -119,12 +120,11 @@ namespace Ex02
             return (i_userInput != 1 && i_userInput != 2);
         }
 
-
         public int AskIfThePlayerWantAnotherGame()
         {
             Console.WriteLine("Would you like to play another game?");
-            Console.WriteLine("If your choice is yes, please press 1");
-            Console.WriteLine("If your choice is no, please press 2");
+            Console.WriteLine("(1) yes");
+            Console.WriteLine("(2) no");
             int anotherGame = int.Parse(Console.ReadLine());
             if (!IsOneOrTwoValidCheck(anotherGame))
             {
@@ -134,24 +134,24 @@ namespace Ex02
             return anotherGame;
         }
 
-
-        public void GetNextCard(out int o_Column, out int o_Row)
+        public int[] GetNextCard()
         {
+            int[] cardValues = new int[1];
             Console.WriteLine("It's your turn!");
             Console.Write("Please enter the next card: ");
             string card = Console.ReadLine();
             if (!IsValidCard(card))
             {
-                GetNextCard(out o_Column, out o_Row);
+                GetNextCard();
             }
-            o_Row = int.Parse(card[1].ToString());
-            o_Column = char.Parse(card[0].ToString()) - 'A';
-          if( m_MemoGameBoard.IsCellIsValid(o_Row,o_Column) != eErrorType.NoError)
+            cardValues[0] = char.Parse(card[0].ToString()) - 'A';
+            cardValues[1] = int.Parse(card[1].ToString());
+            if (m_MemoGameBoard.IsCellIsValid(cardValues) != eErrorType.NoError)
             {
-                GetNextCard(out o_Column, out o_Row);
+                GetNextCard();
             }
+            return cardValues; 
         }
-
         public bool IsValidCard(string i_card)
         {
             bool isValid = true;
@@ -169,5 +169,32 @@ namespace Ex02
             return isValid;
 
         }
+
+        public void RunGame()
+        {
+            m_FirstPlayer.Name = GetPlayerName();
+            int ComputerOrHuman = GetAndCheckIfSecondPlayerCompOrHuman();
+
+            if (ComputerOrHuman == (int)eGameConfig.Computer)
+            {
+                m_SecondPlayer.Name = "Computer";
+            }
+            else
+            {
+                m_SecondPlayer.Name = GetPlayerName();
+            }
+
+            GetBoardBounds();
+            Console.WriteLine(m_MemoGameBoard.BuildBoard());
+            m_FirstPlayer.FirstCard = GetNextCard();
+            m_FirstPlayer.SecondCard = GetNextCard();
+            char firstCardValue = m_MemoGameBoard.GetValueFromCellInBoard(m_FirstPlayer.FirstCard);
+            char secondCardValue = m_MemoGameBoard.GetValueFromCellInBoard(m_FirstPlayer.SecondCard);
+            m_GameLogic.CheckPlayerTurn(m_FirstPlayer,firstCardValue, secondCardValue);
+
+
+
+        }
     }
+
 }

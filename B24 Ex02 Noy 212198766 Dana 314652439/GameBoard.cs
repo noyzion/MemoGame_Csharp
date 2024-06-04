@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace B24_Ex02_Noy_212198766_Dana_314652439
 {
- 
+
     public class GameBoard<T>
     {
 
@@ -47,12 +47,6 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
         }
         public int Width { get { return m_Width; } set { m_Width = value; } }
         public int Height { get { return m_Height; } set { m_Height = value; } }
-        public void SetValidBounds(int i_Width, int i_Height)
-        {
-            m_Width = i_Width;
-            m_Height = i_Height;
-        }
-
         public (int height, int width) GameMemoryBoard
         {
             get { return (m_Height, m_Width); }
@@ -89,10 +83,10 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
                 }
             }
         }
-       
-        public void UpdateBoard(int i_Row,int i_Col)
+
+        public void UpdateBoard(int i_Row, int i_Col)
         {
-                m_GameMemoryBoard[i_Row, i_Col].IsCardOpen = true;
+            m_GameMemoryBoard[i_Row, i_Col].IsCardOpen = true;
         }
         public StringBuilder BuildBoard()
         {
@@ -109,7 +103,7 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
 
             for (int i = 0; i < m_Height; i++)
             {
-                boardBase.Append(i+1 + " ");
+                boardBase.Append(i + 1 + " ");
                 for (int j = 0; j < m_Width; j++)
                 {
                     boardBase.Append('|');
@@ -132,29 +126,51 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             return boardBase;
         }
 
-        public eErrorType IsCellIsValid(int i_Row, int i_Col)
+        public eErrorType IsCellIsValid(int[] i_Card)
         {
             eErrorType errorType = eErrorType.NoError;
-            if (!IsCellIsOpen(i_Row, i_Col))
+            if (!IsCellIsOpen(i_Card))
             {
                 errorType = eErrorType.FullCell;
             }
-            else if (!IsCellIsInBounds(i_Row, i_Col))
+            else if (!IsCellIsInBounds(i_Card))
             {
                 errorType = eErrorType.NoSuchCell;
             }
             return errorType;
         }
 
-        public bool IsCellIsOpen(int i_Row,int i_Col)
+        public bool IsCellIsOpen(int[] i_Card)
         {
-            return m_GameMemoryBoard[i_Row, i_Col].IsCardOpen;
+            return m_GameMemoryBoard[i_Card[1], i_Card[0]].IsCardOpen;
         }
 
-        public bool IsCellIsInBounds(int i_Row, int i_Col)
+        public bool IsCellIsInBounds(int[] i_Card)
         {
             char widthLetter = (char)('A' + m_Width);
-            return i_Col < 'A' && i_Col > widthLetter && i_Row < 1 && i_Row > m_Height;
+            return i_Card[0] < 'A' && i_Card[0] > widthLetter && i_Card[1] < 1 && i_Card[1] > m_Height;
+        }
+
+
+        public T GetValueFromCellInBoard(int[] i_Card)
+        {
+            return m_GameMemoryBoard[i_Card[1], i_Card[0]].CardValue;
+        }
+
+        public bool IsBoardFull()
+        {
+            bool isBoardFull = true;
+            for (int i = 0; i < m_Height; i++)
+            {
+                for (int j = 0; j < m_Width; j++)
+                {
+                    if (!m_GameMemoryBoard[i, j].IsCardOpen)
+                    {
+                        isBoardFull = false;
+                    }
+                }
+            }
+            return isBoardFull;
         }
     }
 }
