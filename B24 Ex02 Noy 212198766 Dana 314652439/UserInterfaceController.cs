@@ -134,24 +134,24 @@ namespace Ex02
             return anotherGame;
         }
 
-        public int[] GetNextCard()
+        public int[] GetNextCard(string i_name)
         {
             int[] cardValues = new int[2];
-            Console.WriteLine("It's your turn!");
+            Console.WriteLine(i_name + " It's your turn!");
             Console.Write("Please enter the next card: ");
             string card = Console.ReadLine();
             if (!IsValidCard(card))
             {
                 PrintError(eErrorType.InvalidInput); 
-                GetNextCard();
+                GetNextCard(i_name);
             }
             cardValues[0] = char.Parse(card[0].ToString()) - 'A';
-            cardValues[1] = int.Parse(card[1].ToString());
+            cardValues[1] = int.Parse(card[1].ToString()) - 1;
             eErrorType isCellValid = m_MemoGameBoard.IsCellIsValid(cardValues);
             if(isCellValid != eErrorType.NoError)
             {
                 PrintError(isCellValid);
-                GetNextCard();
+                GetNextCard(i_name);
             }
 
             return cardValues; 
@@ -176,6 +176,7 @@ namespace Ex02
 
         public void RunGame()
         {
+            eGameConfig gameStaus = eGameConfig.CountinueGame;
             m_FirstPlayer.Name = GetPlayerName();
             int ComputerOrHuman = GetAndCheckIfSecondPlayerCompOrHuman();
 
@@ -194,16 +195,19 @@ namespace Ex02
             m_MemoGameBoard.FillBoardWithValues();
             Console.WriteLine(m_MemoGameBoard.BuildBoard());
 
-            m_FirstPlayer.IsMyTurn = true;
-            if (m_FirstPlayer.IsMyTurn)
+            while (gameStaus != eGameConfig.EndGame)
             {
-                PlayerTurn(m_FirstPlayer);
-                m_SecondPlayer.IsMyTurn = true;
-            }
-            if(m_SecondPlayer.IsMyTurn)
-            {
-                PlayerTurn(m_SecondPlayer);
                 m_FirstPlayer.IsMyTurn = true;
+                while (m_FirstPlayer.IsMyTurn)
+                {
+                    gameStaus = PlayerTurn(m_FirstPlayer);
+                }
+                m_SecondPlayer.IsMyTurn = true;
+                while (m_SecondPlayer.IsMyTurn)
+                {
+                    gameStaus = PlayerTurn(m_SecondPlayer);
+                }
+                gameStaus = m_MemoGameBoard.IsBoardFull();
             }
 
 
@@ -215,13 +219,13 @@ namespace Ex02
 
             if (fullBoard == eGameConfig.CountinueGame)
             {
-                i_player.FirstCard = GetNextCard();
+                i_player.FirstCard = GetNextCard(i_player.Name);
                 Ex02.ConsoleUtils.Screen.Clear();
 
                 m_MemoGameBoard.UpdateBoard(i_player.FirstCard,true);
                 Console.WriteLine(m_MemoGameBoard.BuildBoard());
 
-                i_player.SecondCard = GetNextCard();
+                i_player.SecondCard = GetNextCard(i_player.Name);
 
                 Ex02.ConsoleUtils.Screen.Clear();
                 m_MemoGameBoard.UpdateBoard(i_player.SecondCard,true);
@@ -235,13 +239,14 @@ namespace Ex02
                 if (i_player.IsMyTurn)
                 {
                     Console.WriteLine(m_MemoGameBoard.BuildBoard());
-                    PlayerTurn(i_player);
                 }
                 else
                 {
                     Console.WriteLine(m_MemoGameBoard.BuildBoard());
-                    System.Threading.Thread.Sleep(2);
+                    System.Threading.Thread.Sleep(2000);
+                    m_MemoGameBoard.UpdateBoard(i_player.FirstCard, false);
                     m_MemoGameBoard.UpdateBoard(i_player.SecondCard, false);
+                    Ex02.ConsoleUtils.Screen.Clear();
                     Console.WriteLine(m_MemoGameBoard.BuildBoard());
                     i_player.IsMyTurn = false;
                 }

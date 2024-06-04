@@ -123,7 +123,6 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             }
             return boardBase;
         }
-
         public eErrorType IsCellIsValid(int[] i_Card)
         {
             eErrorType errorType = eErrorType.NoError;
@@ -131,30 +130,24 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             {
                 errorType = eErrorType.OutOfBounds;
             }
-            else if (!IsCellIsOpen(i_Card))
+            else if (IsCellIsOpen(i_Card))
             {
                 errorType = eErrorType.NoSuchCell;
             }
             return errorType;
         }
-
         public bool IsCellIsOpen(int[] i_Card)
         {
             return m_GameMemoryBoard[i_Card[1], i_Card[0]].IsCardOpen;
         }
-
         public bool IsCellIsInBounds(int[] i_Card)
         {
-            char widthLetter = (char)('A' + m_Width);
-            return i_Card[0] < 'A' && i_Card[0] > widthLetter && i_Card[1] < 1 && i_Card[1] > m_Height;
+            return !((i_Card[0] < 0 || i_Card[0] > m_Width) && (i_Card[1] < 0 || i_Card[1] > m_Height));
         }
-
-
         public T GetValueFromCellInBoard(int[] i_Card)
         {
             return m_GameMemoryBoard[i_Card[1], i_Card[0]].CardValue;
         }
-
         public eGameConfig IsBoardFull()
         {
             eGameConfig isBoardFull = eGameConfig.EndGame;
