@@ -13,7 +13,6 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
     public class GameBoard<T>
     {
 
-        private int k_LengthOfSeprator = 4;
         private Card[,] m_GameMemoryBoard;
         private int m_Width;
         private int m_Height;
@@ -90,7 +89,7 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
         public eErrorType IsCellIsValid(int[] i_Card)
         {
             eErrorType errorType = eErrorType.NoError;
-            if  (!IsCellIsInBounds(i_Card))
+            if  (IsCellNotInBounds(i_Card))
             {
                 errorType = eErrorType.OutOfBounds;
             }
@@ -104,9 +103,9 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
         {
             return m_GameMemoryBoard[i_Card[1], i_Card[0]].IsCardOpen;
         }
-        public bool IsCellIsInBounds(int[] i_Card)
+        public bool IsCellNotInBounds(int[] i_Card)
         {
-            return !((i_Card[0] < 0 || i_Card[0] > m_Width) && (i_Card[1] < 0 || i_Card[1] > m_Height));
+            return (i_Card[0] < 0 || i_Card[0] > m_Width || i_Card[1] < 0 || i_Card[1] > m_Height);
         }
         public T GetValueFromCellInBoard(int[] i_Card)
         {

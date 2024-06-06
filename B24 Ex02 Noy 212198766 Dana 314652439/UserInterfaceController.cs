@@ -178,7 +178,7 @@ namespace Ex02
             return anotherGame;
         }
 
-        public StringBuilder BuildBoard()
+        public void BuildBoard()
         {
             StringBuilder boardBase = new StringBuilder();
             boardBase.Append("    ");
@@ -196,7 +196,7 @@ namespace Ex02
                 for (int j = 0; j < m_MemoGameBoard.Width; j++)
                 {
                     boardBase.Append('|');
-                    int[] card = { i, j };
+                    int[] card = { j, i };
                     if (m_MemoGameBoard.IsCellIsOpen(card))
                     {
                         boardBase.Append(" ");
@@ -213,8 +213,35 @@ namespace Ex02
                 boardBase.Append("  ");
                 boardBase.Append('=', k_MinBoardSize * m_MemoGameBoard.Width + 1).AppendLine();
             }
-            return boardBase;
+            PrintPlayersScore();
+            Console.WriteLine(boardBase.ToString());
+            
         }
 
+        public void PrintPlayersScore()
+        {
+            Console.Write("{0} score: {1}", FirstPlayer.Name, FirstPlayer.Score);
+            Console.Write("     ");
+            Console.WriteLine("{0} score: {1}", SecondPlayer.Name, SecondPlayer.Score);
+        }
+
+        public void PrintWinner()
+        {
+            PrintPlayersScore();
+            if(FirstPlayer.Score > SecondPlayer.Score)
+            {
+                Console.WriteLine("Congrats! {0} you are the winner!", FirstPlayer.Name);
+            }
+            else if (FirstPlayer.Score < SecondPlayer.Score)
+            {
+                Console.WriteLine("Congrats! {0} you are the winner!", SecondPlayer.Name);
+            }
+            else
+            {
+                Console.WriteLine("Congrats for you both! Its a tie!");
+            }
+        }
     }
+
+
 }
