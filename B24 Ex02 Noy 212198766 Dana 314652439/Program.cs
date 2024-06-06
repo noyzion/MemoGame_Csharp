@@ -11,7 +11,7 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
     {
         public static void Main()
         {
-            UserInterfaceController user = new UserInterfaceController();
+            UserInterfaceManager user = new UserInterfaceManager();
             user.RunGame();
 
         }

@@ -87,42 +87,6 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
         {
             m_GameMemoryBoard[i_Card[1], i_Card[0]].IsCardOpen = i_IsCardOpen;
         }
-        public StringBuilder BuildBoard()
-        {
-            StringBuilder boardBase = new StringBuilder();
-            boardBase.Append("    ");
-            for (int i = 0; i < m_Width; i++)
-            {
-                boardBase.Append((char)('A' + i) + "   ");
-            }
-            boardBase.AppendLine();
-            boardBase.Append("  ");
-            boardBase.Append('=', k_LengthOfSeprator * m_Width + 1).AppendLine();
-
-            for (int i = 0; i < m_Height; i++)
-            {
-                boardBase.Append(i + 1 + " ");
-                for (int j = 0; j < m_Width; j++)
-                {
-                    boardBase.Append('|');
-                    if (m_GameMemoryBoard[i, j].IsCardOpen)
-                    {
-                        boardBase.Append(" ");
-                        boardBase.Append(m_GameMemoryBoard[i, j].CardValue);
-                        boardBase.Append(" ");
-                    }
-                    else
-                    {
-                        boardBase.Append("   ");
-                    }
-                }
-                boardBase.Append('|');
-                boardBase.AppendLine();
-                boardBase.Append("  ");
-                boardBase.Append('=', k_LengthOfSeprator * m_Width + 1).AppendLine();
-            }
-            return boardBase;
-        }
         public eErrorType IsCellIsValid(int[] i_Card)
         {
             eErrorType errorType = eErrorType.NoError;
