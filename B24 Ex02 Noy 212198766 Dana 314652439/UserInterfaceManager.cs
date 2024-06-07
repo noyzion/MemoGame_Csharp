@@ -1,4 +1,6 @@
 ﻿
+using System.Linq;
+
 namespace Exercise02
 {
     public class UserInterfaceManager
@@ -16,11 +18,15 @@ namespace Exercise02
             if (ComputerOrHuman == (int)eGameConfig.Human)
             {
                 secondPlayer.Name = UIController.GetPlayerName();
+                if(firstPlayer.Name == secondPlayer.Name)
+                {
+                    secondPlayer.Name = secondPlayer.Name + "2";
+                }
 
             }
             else
             {
-                secondPlayer.Name = "Computer";
+                secondPlayer.Name = "computer";
             }
 
             int width, height;
@@ -38,11 +44,7 @@ namespace Exercise02
             char[] valuesForTheBoard = UIController.ShuffleCharValuesForTheBoard(memoGameBoard);
             UIController.MatchLogicalValueToChar(memoGameBoard, valuesForTheBoard);
             UIController.PrintBoard(memoGameBoard);
-
-
-
-
-
+            
             while (gameStatus != eGameConfig.EndGame)
             {
                 firstPlayer.IsMyTurn = true;
@@ -67,17 +69,28 @@ namespace Exercise02
 
             if (fullBoard == eGameConfig.CountinueGame)
             {
-                i_Player.FirstCard = UIController.GetNextCard(i_MemoGameBoard,i_Player.Name);
+
+                if (i_Player.Name == "computer")
+                {
+                    i_Player.ComputerChooseCards(i_MemoGameBoard, m_GameLogic);
+                    i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, true);
+                    i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, true);
+
+                }
+                else
+                {
+                    i_Player.FirstCard = UIController.GetNextCard(i_MemoGameBoard, i_Player.Name);
+                    Ex02.ConsoleUtils.Screen.Clear();
+
+                    i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, true);
+                    UIController.PrintBoard(i_MemoGameBoard);
+
+                    i_Player.SecondCard = UIController.GetNextCard(i_MemoGameBoard, i_Player.Name);
+
+                    i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, true);
+                }
+
                 Ex02.ConsoleUtils.Screen.Clear();
-
-                i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, true);
-                UIController.PrintBoard(i_MemoGameBoard);
-
-                i_Player.SecondCard = UIController.GetNextCard(i_MemoGameBoard,i_Player.Name);
-
-                Ex02.ConsoleUtils.Screen.Clear();
-                i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, true);
-
                 m_GameLogic.CheckCardsAndReplaceTurn(i_MemoGameBoard, i_Player);
 
                 if (i_Player.IsMyTurn)

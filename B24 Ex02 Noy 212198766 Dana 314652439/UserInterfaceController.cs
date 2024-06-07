@@ -67,6 +67,8 @@ namespace Exercise02
             string playerName = Console.ReadLine();
             return playerName;
         }
+
+        //not working
         public void GetAndCheckBoardBounds(out int o_Width, out int o_Height)
         {
             Console.Write("Please enter the board width: ");
@@ -133,16 +135,24 @@ namespace Exercise02
         public bool IsValidCard(string i_card)
         {
             bool isValid = true;
-            if (i_card[0] < 'A' || i_card[0] > 'Z')
+            if (i_card.Length != 2)
             {
-                PrintError(eErrorType.NotALetter);
+                PrintError(eErrorType.InvalidInput);
                 isValid = false;
             }
-            bool checkIfNumber = int.TryParse(i_card[1].ToString(), out int numberInCard);
-            if (numberInCard < 1 || !checkIfNumber)
+            else
             {
-                PrintError(eErrorType.NotAnInteger);
-                isValid = false;
+                if (i_card[0] < 'A' || i_card[0] > 'Z')
+                {
+                    PrintError(eErrorType.NotALetter);
+                    isValid = false;
+                }
+                bool checkIfNumber = int.TryParse(i_card[1].ToString(), out int numberInCard);
+                if (numberInCard < 1 || !checkIfNumber)
+                {
+                    PrintError(eErrorType.NotAnInteger);
+                    isValid = false;
+                }
             }
             return isValid;
 
