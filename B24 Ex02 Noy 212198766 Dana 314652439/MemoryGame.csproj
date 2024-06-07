@@ -36,11 +36,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Ex02.ConsoleUtils">
-      <HintPath>..\..\..\..\..\..\Windows\Temp\Ex02.ConsoleUtils.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="eErrorType.cs" />
     <Compile Include="eGameConfig.cs" />
     <Compile Include="GameBoard.cs" />
@@ -49,6 +44,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="UserInterfaceController.cs" />
     <Compile Include="UserInterfaceManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Ex02.ConsoleUtils">
+      <HintPath>..\..\..\..\..\..\..\Windows\Temp\Ex02.ConsoleUtils.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

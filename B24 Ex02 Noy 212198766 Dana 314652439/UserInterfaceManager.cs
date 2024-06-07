@@ -22,7 +22,6 @@ namespace Exercise02
                 {
                     secondPlayer.Name = secondPlayer.Name + "2";
                 }
-
             }
             else
             {
@@ -96,6 +95,10 @@ namespace Exercise02
                 if (i_Player.IsMyTurn)
                 {
                     UIController.PrintBoard(i_MemoGameBoard);
+                    if(i_Player.Name == "computer")
+                    {
+                        System.Threading.Thread.Sleep(2000);
+                    }
                 }
                 else
                 {

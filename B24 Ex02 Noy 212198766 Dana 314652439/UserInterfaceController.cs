@@ -94,8 +94,8 @@ namespace Exercise02
                                "or against the computer?");
             Console.WriteLine("(1) Computer");
             Console.WriteLine("(2) Human");
-            int playerOrComp = int.Parse(Console.ReadLine());
-            if (!IsOneOrTwoValidCheck(playerOrComp))
+            bool checkIfNumber = int.TryParse(Console.ReadLine().ToString(), out int playerOrComp);
+            if (!IsOneOrTwoValidCheck(playerOrComp) || !checkIfNumber)
             {
                 PrintError(eErrorType.InvalidInput);
                 playerOrComp = GetAndCheckIfSecondPlayerCompOrHuman();

@@ -30,8 +30,8 @@ namespace Exercise02
                 {
                     if (i_gameLogic.RememberValues[rememberListIndex].HowManyTimesOpened == 2)
                     {
-                        FirstCard = i_gameLogic.RememberValues[rememberListIndex].CardOneCoordinate;
-                        SecondCard = i_gameLogic.RememberValues[rememberListIndex].CardTwoCoordinate;
+                        m_FirstCard = i_gameLogic.RememberValues[rememberListIndex].CardOneCoordinate;
+                        m_SecondCard = i_gameLogic.RememberValues[rememberListIndex].CardTwoCoordinate;
                         foundCard = true;
                     }
                 }
@@ -41,30 +41,28 @@ namespace Exercise02
             {
                 Random random = new Random();
                 
-                //error - fixed we need to random from the bounds
-                m_FirstCard[0] = random.Next(i_Board.Height);
-                m_FirstCard[1] = random.Next(i_Board.Width);
+                m_FirstCard[0] = random.Next(i_Board.Width);
+                m_FirstCard[1] = random.Next(i_Board.Height);
                 while (i_Board.IsCellIsOpen(m_FirstCard))
                 {
-                    m_FirstCard[0] = random.Next(i_Board.Height);
-                    m_FirstCard[1] = random.Next(i_Board.Width);
+                    m_FirstCard[0] = random.Next(i_Board.Width);
+                    m_FirstCard[1] = random.Next(i_Board.Height);
                 }
                 i_gameLogic.UpdateRememberList(m_FirstCard, i_Board.GetValueFromCellInBoard(m_FirstCard));
 
-
                 if (i_gameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)].HowManyTimesOpened == 2)
                 {
-                    SecondCard = i_gameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)].CardTwoCoordinate;
-                    i_gameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)].HowManyTimesOpened++; //update to 3 - means both opene
+                    m_SecondCard = i_gameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)].CardOneCoordinate;
                 }
                 else
                 {
-                    m_SecondCard[0] = random.Next(i_Board.Height);
-                    m_SecondCard[1] = random.Next(i_Board.Width);
-                    while (i_Board.IsCellIsOpen(m_SecondCard))
+                    m_SecondCard[0] = random.Next(i_Board.Width);
+                    m_SecondCard[1] = random.Next(i_Board.Height);
+                    while (i_Board.IsCellIsOpen(m_SecondCard)
+                        && (m_SecondCard[0] != m_FirstCard[0] && m_SecondCard[1] != m_FirstCard[1]))
                     {
-                        m_SecondCard[0] = random.Next(i_Board.Height);
-                        m_SecondCard[1] = random.Next(i_Board.Width);
+                        m_SecondCard[0] = random.Next(i_Board.Width);
+                        m_SecondCard[1] = random.Next(i_Board.Height);
                     }
                     i_gameLogic.UpdateRememberList(m_SecondCard, i_Board.GetValueFromCellInBoard(m_SecondCard));
 
