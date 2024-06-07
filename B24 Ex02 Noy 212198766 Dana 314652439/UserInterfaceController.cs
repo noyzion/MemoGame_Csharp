@@ -1,30 +1,73 @@
-﻿using B24_Ex02_Noy_212198766_Dana_314652439;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Ex02
+namespace Exercise02
 {
     public class UserInterfaceController
     {
         private const int k_MaxBoardSize = 6;
         private const int k_MinBoardSize = 4;
-        GameBoard<char> m_MemoGameBoard = new GameBoard<char>();
-        Player m_FirstPlayer = new Player();
-        Player m_SecondPlayer = new Player();
+        char[] m_MatchingBoardValues;
 
-        public Player FirstPlayer { get { return m_FirstPlayer; } set { FirstPlayer = value; } }
-        public Player SecondPlayer { get { return m_SecondPlayer; } set { SecondPlayer = value; } }
-        public GameBoard<char> GameBoard { get { return m_MemoGameBoard; } } 
+        public char[] ShuffleCharValuesForTheBoard(GameBoard i_MemoGameBoard)
+        {
+            Random random = new Random();
+            char[] BoardValues = new char[(i_MemoGameBoard.Width * i_MemoGameBoard.Height) / 2];
+            for (int i = 0; i < BoardValues.Length; i++)
+            {
+
+                char nextLetter = (char)random.Next('A', 'Z');
+                while (IsCharEqualToCardInArr(BoardValues, i, nextLetter))
+                {
+                    nextLetter = (char)random.Next('A', 'Z');
+                }
+                BoardValues[i] = nextLetter;
+
+
+            }
+            return BoardValues;
+
+        }
+
+        public bool IsCharEqualToCardInArr(char[] i_BoardValues, int i_CurrentSize, char i_RandomChar)
+        {
+            bool isEqual = false;
+            for(int j = 0; j < i_CurrentSize; j++)
+            {
+                if (i_BoardValues[j] == i_RandomChar)
+                {
+                    isEqual = true;
+                }
+            }
+            return isEqual;
+        }
+
+        public void MatchLogicalValueToChar(GameBoard i_MemoGameBoard,char[] i_BoardValues)
+        {
+            int amountOfValues = (i_MemoGameBoard.Width * i_MemoGameBoard.Height) / 2;
+            m_MatchingBoardValues = new char[amountOfValues];
+            int valuesIndex = 0;
+            for (int i = 0; i < i_MemoGameBoard.Height && valuesIndex < amountOfValues; i++)
+            {
+                for (int j = 0; j < i_MemoGameBoard.Width && valuesIndex < amountOfValues; j++)
+                {
+                    int[] card = { j, i };
+                    int LogicalValueFromCellInBoard = i_MemoGameBoard.GetValueFromCellInBoard(card);
+                    if (m_MatchingBoardValues[LogicalValueFromCellInBoard] == '\0' )
+                    {
+                        m_MatchingBoardValues[LogicalValueFromCellInBoard] = i_BoardValues[valuesIndex];
+                        valuesIndex++;
+                    }
+                }
+            }
+        }
         public string GetPlayerName()
         {
             Console.Write("Please enter your name: ");
             string playerName = Console.ReadLine();
             return playerName;
         }
-        public void GetAndCheckBoardBounds()
+        public void GetAndCheckBoardBounds(out int o_Width, out int o_Height)
         {
             Console.Write("Please enter the board width: ");
             string boardWidth = Console.ReadLine();
@@ -33,19 +76,14 @@ namespace Ex02
             if (CheckIfIntegers(boardWidth, boardHeight) != eErrorType.NoError)
             {
                 PrintError(eErrorType.NotAnInteger);
-                GetAndCheckBoardBounds();
+                GetAndCheckBoardBounds(out o_Width,out o_Height);
             }
-            m_MemoGameBoard.Width = int.Parse(boardWidth);
-            m_MemoGameBoard.Height = int.Parse(boardHeight);
-            if (CheckValidBounds(m_MemoGameBoard.Width, m_MemoGameBoard.Height) != eErrorType.NoError)
+            o_Width = int.Parse(boardWidth);
+            o_Height = int.Parse(boardHeight);
+            if (CheckValidBounds(o_Width, o_Height) != eErrorType.NoError)
             {
                 PrintError(eErrorType.OutOfBounds);
-                GetAndCheckBoardBounds();
-            }
-            if (m_MemoGameBoard.CheckParityBounds() != eErrorType.NoError)
-            {
-                PrintError(eErrorType.OddSize);
-                GetAndCheckBoardBounds();
+                GetAndCheckBoardBounds(out o_Width, out o_Height);
             }
         }
         public int GetAndCheckIfSecondPlayerCompOrHuman()
@@ -62,7 +100,7 @@ namespace Ex02
             }
             return playerOrComp;
         }
-        public int[] GetNextCard(string i_name)
+        public int[] GetNextCard(GameBoard i_MemoGameBoard,string i_name)
         {
             int[] cardValues = new int[2];
             bool validInput = false;
@@ -78,7 +116,7 @@ namespace Ex02
                     cardValues[0] = char.Parse(card[0].ToString()) - 'A';
                     cardValues[1] = int.Parse(card.Substring(1)) - 1;
 
-                    eErrorType isCellValid = m_MemoGameBoard.IsCellIsValid(cardValues);
+                    eErrorType isCellValid = i_MemoGameBoard.IsCellIsValid(cardValues);
                     if (isCellValid == eErrorType.NoError)
                     {
                         validInput = true;
@@ -177,30 +215,30 @@ namespace Ex02
             }
             return anotherGame;
         }
-
-        public void BuildBoard()
+        public void PrintBoard(GameBoard i_MemoGameBoard)
         {
             StringBuilder boardBase = new StringBuilder();
             boardBase.Append("    ");
-            for (int i = 0; i < m_MemoGameBoard.Width; i++)
+            for (int i = 0; i < i_MemoGameBoard.Width; i++)
             {
                 boardBase.Append((char)('A' + i) + "   ");
             }
             boardBase.AppendLine();
             boardBase.Append("  ");
-            boardBase.Append('=', k_MinBoardSize * m_MemoGameBoard.Width + 1).AppendLine();
+            boardBase.Append('=', k_MinBoardSize * i_MemoGameBoard.Width + 1).AppendLine();
 
-            for (int i = 0; i < m_MemoGameBoard.Height; i++)
+            for (int i = 0; i < i_MemoGameBoard.Height; i++)
             {
                 boardBase.Append(i + 1 + " ");
-                for (int j = 0; j < m_MemoGameBoard.Width; j++)
+                for (int j = 0; j < i_MemoGameBoard.Width; j++)
                 {
                     boardBase.Append('|');
                     int[] card = { j, i };
-                    if (m_MemoGameBoard.IsCellIsOpen(card))
+                    if (i_MemoGameBoard.IsCellIsOpen(card))
                     {
                         boardBase.Append(" ");
-                        boardBase.Append(m_MemoGameBoard.GetValueFromCellInBoard(card));
+                        int logicalValue = i_MemoGameBoard.GetValueFromCellInBoard(card);
+                        boardBase.Append(m_MatchingBoardValues[logicalValue]);
                         boardBase.Append(" ");
                     }
                     else
@@ -211,30 +249,26 @@ namespace Ex02
                 boardBase.Append('|');
                 boardBase.AppendLine();
                 boardBase.Append("  ");
-                boardBase.Append('=', k_MinBoardSize * m_MemoGameBoard.Width + 1).AppendLine();
+                boardBase.Append('=', k_MinBoardSize * i_MemoGameBoard.Width + 1).AppendLine();
             }
-            PrintPlayersScore();
             Console.WriteLine(boardBase.ToString());
-            
         }
-
-        public void PrintPlayersScore()
+        public void PrintPlayersScore(Player i_FirstPlayer, Player i_SecondPlayer)
         {
-            Console.Write("{0} score: {1}", FirstPlayer.Name, FirstPlayer.Score);
+            Console.Write("{0} score: {1}", i_FirstPlayer.Name, i_FirstPlayer.Score);
             Console.Write("     ");
-            Console.WriteLine("{0} score: {1}", SecondPlayer.Name, SecondPlayer.Score);
+            Console.WriteLine("{0} score: {1}", i_SecondPlayer.Name, i_SecondPlayer.Score);
         }
-
-        public void PrintWinner()
+        public void PrintWinner(Player i_FirstPlayer,Player i_SecondPlayer)
         {
-            PrintPlayersScore();
-            if(FirstPlayer.Score > SecondPlayer.Score)
+            PrintPlayersScore(i_FirstPlayer,i_SecondPlayer);
+            if(i_FirstPlayer.Score > i_SecondPlayer.Score)
             {
-                Console.WriteLine("Congrats! {0} you are the winner!", FirstPlayer.Name);
+                Console.WriteLine("Congrats! {0} you are the winner!", i_FirstPlayer.Name);
             }
-            else if (FirstPlayer.Score < SecondPlayer.Score)
+            else if (i_FirstPlayer.Score < i_SecondPlayer.Score)
             {
-                Console.WriteLine("Congrats! {0} you are the winner!", SecondPlayer.Name);
+                Console.WriteLine("Congrats! {0} you are the winner!", i_SecondPlayer.Name);
             }
             else
             {

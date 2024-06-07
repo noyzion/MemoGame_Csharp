@@ -1,32 +1,39 @@
 ﻿using Ex02;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace B24_Ex02_Noy_212198766_Dana_314652439
+namespace Exercise02
 {
 
-    public class GameBoard<T>
+    public class GameBoard
     {
 
-        private Card[,] m_GameMemoryBoard;
+        private Card[,] m_GameMemoryBoard; 
         private int m_Width;
         private int m_Height;
-        private T[] m_ValuesForTheBoard;
-        private int[] m_CounterValuesFromTheBoard;
+        private int[] m_CounterValuesFromTheBoard; 
 
-        private class Card
+        private class Card //cell
         {
-            private T m_CardValue;
+            private int m_CardValue; 
             private bool m_IsCardOpen; //True = open, False = close
 
-            public T CardValue { get { return m_CardValue; } set { m_CardValue = value; } }
+            public int CardValue { get { return m_CardValue; } set { m_CardValue = value; } }
             public bool IsCardOpen { get { return m_IsCardOpen; } set { m_IsCardOpen = value; } }
 
+        }
+
+
+        public GameBoard(int i_Width, int i_Height)
+        {
+            m_Width = i_Width;
+            m_Height = i_Height;
+            if (CheckParityBounds() == eErrorType.NoError)
+            {
+                m_GameMemoryBoard = new Card[Height, Width];
+                int numberOfValuesInBoard = (m_Height * m_Width) / 2;
+                m_CounterValuesFromTheBoard = new int[numberOfValuesInBoard];
+                FillBoardWithLogicValues();
+            }
         }
 
         public eErrorType CheckParityBounds()
@@ -38,12 +45,7 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             }
             return error;
         }
-        public void GetValuesForTheBoard(T[] i_ValuesForTheBoard)
-        {
-            m_ValuesForTheBoard = i_ValuesForTheBoard;
-            m_CounterValuesFromTheBoard = new int[m_Width * m_Height / 2];
 
-        }
         public int Width { get { return m_Width; } set { m_Width = value; } }
         public int Height { get { return m_Height; } set { m_Height = value; } }
         public (int height, int width) GameMemoryBoard
@@ -57,9 +59,8 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             }
         }
 
-        public void FillBoardWithValues()
+        public void FillBoardWithLogicValues()
         {
-            m_GameMemoryBoard = new Card[m_Height, m_Width];
 
             Random random = new Random();
 
@@ -67,15 +68,15 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
             {
                 for (int j = 0; j < m_Width; j++)
                 {
-                    int nextIndex = random.Next(m_ValuesForTheBoard.Length);
-                    while (m_CounterValuesFromTheBoard[nextIndex] == 2)
+                    int nextValue = random.Next(m_CounterValuesFromTheBoard.Length);
+                    while (m_CounterValuesFromTheBoard[nextValue] == 2)
                     {
-                        nextIndex = random.Next(m_ValuesForTheBoard.Length);
+                        nextValue = random.Next(m_CounterValuesFromTheBoard.Length);
                     }
-                    m_CounterValuesFromTheBoard[nextIndex]++;
+                    m_CounterValuesFromTheBoard[nextValue]++;
                     m_GameMemoryBoard[i, j] = new Card
                     {
-                        CardValue = m_ValuesForTheBoard[nextIndex],
+                        CardValue = nextValue,
                         IsCardOpen = false
                     };
                 }
@@ -107,7 +108,7 @@ namespace B24_Ex02_Noy_212198766_Dana_314652439
         {
             return (i_Card[0] < 0 || i_Card[0] > m_Width || i_Card[1] < 0 || i_Card[1] > m_Height);
         }
-        public T GetValueFromCellInBoard(int[] i_Card)
+        public int GetValueFromCellInBoard(int[] i_Card)
         {
             return m_GameMemoryBoard[i_Card[1], i_Card[0]].CardValue;
         }

@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 
-namespace B24_Ex02_Noy_212198766_Dana_314652439
+namespace Exercise02
 {
-    internal class GameLogic<T>
+    internal class GameLogic
     {
 
-        public void CheckPlayerTurn(Player i_Player,T i_CardOneValue, T i_CardTwoValue)
+        public void CheckCardsAndReplaceTurn(GameBoard i_MemoGameBoard, Player i_Player)
         {
-            if (Equals(i_CardOneValue, i_CardTwoValue))
+            int logicalValueFirstCard = i_MemoGameBoard.GetValueFromCellInBoard(i_Player.FirstCard);
+            int logicalValueSecondCard = i_MemoGameBoard.GetValueFromCellInBoard(i_Player.SecondCard);
+
+            if (logicalValueFirstCard == logicalValueSecondCard)
             {
                 i_Player.IsMyTurn = true;
                 i_Player.Score++;

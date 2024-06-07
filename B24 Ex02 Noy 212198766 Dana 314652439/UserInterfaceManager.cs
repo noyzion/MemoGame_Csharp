@@ -1,93 +1,105 @@
-﻿using Ex02;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace B24_Ex02_Noy_212198766_Dana_314652439
+﻿
+namespace Exercise02
 {
     public class UserInterfaceManager
     {
         UserInterfaceController UIController = new UserInterfaceController();
-        GameLogic<char> m_GameLogic = new GameLogic<char>();
+        GameLogic m_GameLogic = new GameLogic();
         public void RunGame()
         {
             eGameConfig gameStatus = eGameConfig.CountinueGame;
-            UIController.FirstPlayer.Name = UIController.GetPlayerName();
+            Player firstPlayer = new Player();
+            firstPlayer.Name = UIController.GetPlayerName();
             int ComputerOrHuman = UIController.GetAndCheckIfSecondPlayerCompOrHuman();
 
+            Player secondPlayer = new Player();
             if (ComputerOrHuman == (int)eGameConfig.Human)
             {
-                UIController.SecondPlayer.Name = UIController.GetPlayerName();
+                secondPlayer.Name = UIController.GetPlayerName();
+
             }
             else
             {
-                UIController.SecondPlayer.Name = "Computer";
+                secondPlayer.Name = "Computer";
             }
 
-            UIController.GetAndCheckBoardBounds();
-            char[] array = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
-            UIController.GameBoard.GetValuesForTheBoard(array);
-            UIController.GameBoard.FillBoardWithValues();
-            UIController.BuildBoard();
+            int width, height;
+            UIController.GetAndCheckBoardBounds(out width, out height);
+
+            GameBoard memoGameBoard = new GameBoard(width, height);
+
+            while (memoGameBoard.CheckParityBounds() != eErrorType.NoError)
+            {
+                UIController.PrintError(eErrorType.OddSize);
+                UIController.GetAndCheckBoardBounds(out width, out height);
+                memoGameBoard = new GameBoard(width, height);
+            }
+
+            char[] valuesForTheBoard = UIController.ShuffleCharValuesForTheBoard(memoGameBoard);
+            UIController.MatchLogicalValueToChar(memoGameBoard, valuesForTheBoard);
+            UIController.PrintBoard(memoGameBoard);
+
+
+
+
 
             while (gameStatus != eGameConfig.EndGame)
             {
-                UIController.FirstPlayer.IsMyTurn = true;
-                while (UIController.FirstPlayer.IsMyTurn && gameStatus != eGameConfig.EndGame)
+                firstPlayer.IsMyTurn = true;
+                while (firstPlayer.IsMyTurn && gameStatus != eGameConfig.EndGame)
                 {
-                    gameStatus = PlayerTurn(UIController.FirstPlayer);
+                    gameStatus = PlayerTurn(memoGameBoard, firstPlayer);
                 }
-                UIController.SecondPlayer.IsMyTurn = true;
-                while (UIController.SecondPlayer.IsMyTurn && gameStatus != eGameConfig.EndGame)
+                secondPlayer.IsMyTurn = true;
+                while (secondPlayer.IsMyTurn && gameStatus != eGameConfig.EndGame)
                 {
-                    gameStatus = PlayerTurn(UIController.SecondPlayer);
+                    gameStatus = PlayerTurn(memoGameBoard, secondPlayer);
                 }
-                gameStatus = UIController.GameBoard.IsBoardFull();
+                gameStatus = memoGameBoard.IsBoardFull();
             }
 
-            UIController.PrintWinner();
+            UIController.PrintWinner(firstPlayer, secondPlayer);
         }
 
-        public eGameConfig PlayerTurn(Player i_player)
+        public eGameConfig PlayerTurn(GameBoard i_MemoGameBoard, Player i_Player)
         {
-            eGameConfig fullBoard = UIController.GameBoard.IsBoardFull();
+            eGameConfig fullBoard = i_MemoGameBoard.IsBoardFull();
 
             if (fullBoard == eGameConfig.CountinueGame)
             {
-                i_player.FirstCard = UIController.GetNextCard(i_player.Name);
+                i_Player.FirstCard = UIController.GetNextCard(i_MemoGameBoard,i_Player.Name);
                 Ex02.ConsoleUtils.Screen.Clear();
 
-                UIController.GameBoard.UpdateBoard(i_player.FirstCard, true);
-                UIController.BuildBoard();
+                i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, true);
+                UIController.PrintBoard(i_MemoGameBoard);
 
-                i_player.SecondCard = UIController.GetNextCard(i_player.Name);
+                i_Player.SecondCard = UIController.GetNextCard(i_MemoGameBoard,i_Player.Name);
 
                 Ex02.ConsoleUtils.Screen.Clear();
-                UIController.GameBoard.UpdateBoard(i_player.SecondCard, true);
+                i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, true);
 
-                char firstCardValue = UIController.GameBoard.GetValueFromCellInBoard(i_player.FirstCard);
-                char secondCardValue = UIController.GameBoard.GetValueFromCellInBoard(i_player.SecondCard);
-                m_GameLogic.CheckPlayerTurn(i_player, firstCardValue, secondCardValue);
+                m_GameLogic.CheckCardsAndReplaceTurn(i_MemoGameBoard, i_Player);
 
-                if (i_player.IsMyTurn)
+                if (i_Player.IsMyTurn)
                 {
-                    UIController.BuildBoard();
+                    UIController.PrintBoard(i_MemoGameBoard);
                 }
                 else
                 {
-                   UIController.BuildBoard();
+                    UIController.PrintBoard(i_MemoGameBoard);
                     System.Threading.Thread.Sleep(2000);
-                    UIController.GameBoard.UpdateBoard(i_player.FirstCard, false);
-                    UIController.GameBoard.UpdateBoard(i_player.SecondCard, false);
+                    i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, false);
+                    i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, false);
                     Ex02.ConsoleUtils.Screen.Clear();
-                    UIController.BuildBoard();
-                    i_player.IsMyTurn = false;
+                    UIController.PrintBoard(i_MemoGameBoard);
+                    i_Player.IsMyTurn = false;
                 }
-               
+
             }
+
             return fullBoard;
         }
+
     }
+
 }
