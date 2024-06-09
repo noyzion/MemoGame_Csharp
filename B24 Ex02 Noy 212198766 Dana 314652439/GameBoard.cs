@@ -106,7 +106,7 @@ namespace Exercise02
         }
         public bool IsCellNotInBounds(int[] i_Card)
         {
-            return (i_Card[0] < 0 || i_Card[0] > m_Width || i_Card[1] < 0 || i_Card[1] > m_Height);
+            return (i_Card[0] < 0 || i_Card[0] >= m_Width || i_Card[1] < 0 || i_Card[1] >= m_Height);
         }
         public int GetValueFromCellInBoard(int[] i_Card)
         {

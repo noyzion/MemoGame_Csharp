@@ -68,24 +68,25 @@ namespace Exercise02
             return playerName;
         }
 
-        //not working
         public void GetAndCheckBoardBounds(out int o_Width, out int o_Height)
         {
-            Console.Write("Please enter the board width: ");
-            string boardWidth = Console.ReadLine();
-            Console.Write("Please enter the board height: ");
-            string boardHeight = Console.ReadLine();
-            if (CheckIfIntegers(boardWidth, boardHeight) != eErrorType.NoError)
+            o_Width = 0;
+            o_Height = 0;
+            bool validInput = false;
+
+            while (!validInput)
             {
-                PrintError(eErrorType.NotAnInteger);
-                GetAndCheckBoardBounds(out o_Width,out o_Height);
-            }
-            o_Width = int.Parse(boardWidth);
-            o_Height = int.Parse(boardHeight);
-            if (CheckValidBounds(o_Width, o_Height) != eErrorType.NoError)
-            {
-                PrintError(eErrorType.OutOfBounds);
-                GetAndCheckBoardBounds(out o_Width, out o_Height);
+                Console.Write("Please enter the board width: ");
+                string boardWidth = Console.ReadLine();
+                Console.Write("Please enter the board height: ");
+                string boardHeight = Console.ReadLine();
+
+                if (CheckIfIntegers(boardWidth, boardHeight))
+                {
+                    o_Width = int.Parse(boardWidth);
+                    o_Height = int.Parse(boardHeight);
+                    validInput = IsValidBoardSize(o_Width, o_Height);
+                }
             }
         }
         public int GetAndCheckIfSecondPlayerCompOrHuman()
@@ -157,26 +158,26 @@ namespace Exercise02
             return isValid;
 
         }
-        public eErrorType CheckIfIntegers(string i_Width, string i_Height)
+        public bool  CheckIfIntegers(string i_Width, string i_Height)
         {
-            eErrorType errorType = eErrorType.NoError;
-            if (!(int.TryParse(i_Width, out int boardWidth) && int.TryParse(i_Height, out int boardHeight)))
+            bool areIntegers = int.TryParse(i_Width, out _) && int.TryParse(i_Height, out _);
+            if (!areIntegers)
             {
-                errorType = eErrorType.NotAnInteger;
+                PrintError(eErrorType.NotAnInteger);
             }
-            return errorType;
+            return areIntegers;
         }
-        public eErrorType CheckValidBounds(int i_Width, int i_Height)
+        public bool IsValidBoardSize(int i_Width, int i_Height)
         {
-            eErrorType errorType = eErrorType.NoError;
-
-            if (i_Width < k_MinBoardSize || i_Height < k_MinBoardSize ||
-                i_Width > k_MaxBoardSize || i_Height > k_MaxBoardSize)
+            bool isValidBoardSize = true;
+            if( i_Width < k_MinBoardSize || i_Height < k_MinBoardSize
+                || i_Width > k_MaxBoardSize || i_Height > k_MaxBoardSize)
             {
-                errorType = eErrorType.OutOfBounds;
+                isValidBoardSize = false;
+                PrintError(eErrorType.OutOfBounds);
             }
+            return isValidBoardSize;
 
-            return errorType;
         }
         public void PrintError(eErrorType i_ErrorType)
         {

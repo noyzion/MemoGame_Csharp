@@ -59,7 +59,7 @@ namespace Exercise02
                     m_SecondCard[0] = random.Next(i_Board.Width);
                     m_SecondCard[1] = random.Next(i_Board.Height);
                     while (i_Board.IsCellIsOpen(m_SecondCard)
-                        && (m_SecondCard[0] != m_FirstCard[0] && m_SecondCard[1] != m_FirstCard[1]))
+                        || (m_SecondCard[0] == m_FirstCard[0] && m_SecondCard[1] == m_FirstCard[1]))
                     {
                         m_SecondCard[0] = random.Next(i_Board.Width);
                         m_SecondCard[1] = random.Next(i_Board.Height);

@@ -1,5 +1,6 @@
 ﻿
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace Exercise02
 {
@@ -18,9 +19,9 @@ namespace Exercise02
             if (ComputerOrHuman == (int)eGameConfig.Human)
             {
                 secondPlayer.Name = UIController.GetPlayerName();
-                if(firstPlayer.Name == secondPlayer.Name)
+                if (firstPlayer.Name == secondPlayer.Name)
                 {
-                    secondPlayer.Name = secondPlayer.Name + "2";
+                    secondPlayer.Name += "2";
                 }
             }
             else
@@ -28,8 +29,7 @@ namespace Exercise02
                 secondPlayer.Name = "computer";
             }
 
-            int width, height;
-            UIController.GetAndCheckBoardBounds(out width, out height);
+            UIController.GetAndCheckBoardBounds(out int width, out int height);
 
             GameBoard memoGameBoard = new GameBoard(width, height);
 
@@ -43,7 +43,7 @@ namespace Exercise02
             char[] valuesForTheBoard = UIController.ShuffleCharValuesForTheBoard(memoGameBoard);
             UIController.MatchLogicalValueToChar(memoGameBoard, valuesForTheBoard);
             UIController.PrintBoard(memoGameBoard);
-            
+
             while (gameStatus != eGameConfig.EndGame)
             {
                 firstPlayer.IsMyTurn = true;
@@ -95,7 +95,7 @@ namespace Exercise02
                 if (i_Player.IsMyTurn)
                 {
                     UIController.PrintBoard(i_MemoGameBoard);
-                    if(i_Player.Name == "computer")
+                    if (i_Player.Name == "computer")
                     {
                         System.Threading.Thread.Sleep(2000);
                     }

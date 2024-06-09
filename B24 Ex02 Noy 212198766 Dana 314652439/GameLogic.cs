@@ -68,7 +68,7 @@ namespace Exercise02
 
             if (logicalValueFirstCard == logicalValueSecondCard)
             {
-                RememberValues[logicalValueFirstCard].HowManyTimesOpened++; //updated to 3
+                m_RememberValues[logicalValueFirstCard].HowManyTimesOpened++; //updated to 3
                 i_Player.IsMyTurn = true;
                 i_Player.Score++;
             }
