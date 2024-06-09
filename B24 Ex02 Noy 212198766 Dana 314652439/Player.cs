@@ -19,8 +19,7 @@ namespace Exercise02
         public bool IsMyTurn { get { return m_IsMyTurn; } set { m_IsMyTurn = value; } }
         public int[] FirstCard { get { return m_FirstCard; } set { m_FirstCard = value; } }
         public int[] SecondCard { get { return m_SecondCard; } set { m_SecondCard = value; } }
-        public void ComputerChooseCards(GameBoard i_Board,
-                                        GameLogic i_gameLogic)
+        public void ComputerChooseCards(GameBoard i_Board, GameLogic i_gameLogic)
         {
             int rememberListIndex = 0;
             bool foundCard = false;

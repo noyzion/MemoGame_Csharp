@@ -64,6 +64,10 @@ namespace Exercise02
 
         public eGameConfig PlayerTurn(GameBoard i_MemoGameBoard, Player i_Player)
         {
+            i_Player.FirstCard.Initialize();
+            i_Player.SecondCard.Initialize();
+
+
             eGameConfig fullBoard = i_MemoGameBoard.IsBoardFull();
 
             if (fullBoard == eGameConfig.CountinueGame)

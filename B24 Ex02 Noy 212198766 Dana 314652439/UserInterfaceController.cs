@@ -218,8 +218,8 @@ namespace Exercise02
             Console.WriteLine("Would you like to play another game?");
             Console.WriteLine("(1) yes");
             Console.WriteLine("(2) no");
-            int anotherGame = int.Parse(Console.ReadLine());
-            if (!IsOneOrTwoValidCheck(anotherGame))
+            bool checkIfNumber = int.TryParse(Console.ReadLine().ToString(), out int anotherGame);
+            if (!IsOneOrTwoValidCheck(anotherGame) || !checkIfNumber)
             {
                 PrintError(eErrorType.InvalidInput);
                 anotherGame = AskIfThePlayerWantAnotherGame();

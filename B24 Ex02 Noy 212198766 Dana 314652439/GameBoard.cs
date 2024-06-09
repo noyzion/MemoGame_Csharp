@@ -14,10 +14,10 @@ namespace Exercise02
 
         private class Card //cell
         {
-            private int m_CardValue; 
+            private int m_LogivalValue; 
             private bool m_IsCardOpen; //True = open, False = close
 
-            public int CardValue { get { return m_CardValue; } set { m_CardValue = value; } }
+            public int CardValue { get { return m_LogivalValue; } set { m_LogivalValue = value; } }
             public bool IsCardOpen { get { return m_IsCardOpen; } set { m_IsCardOpen = value; } }
 
         }
