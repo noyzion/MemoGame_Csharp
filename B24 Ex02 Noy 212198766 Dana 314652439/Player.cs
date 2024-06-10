@@ -1,8 +1,5 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-
 
 namespace Exercise02
 {
@@ -27,16 +24,19 @@ namespace Exercise02
             if (!foundCards)
             {
                 chooseRandomCards(i_Board);
-                i_GameLogic.UpdateRememberValues(m_FirstCard, i_Board.GetValueFromCellInBoard(m_FirstCard));
+                int logicalValueFirstCard = i_Board.GetValueFromCellInBoard(m_FirstCard);
 
-                if (i_GameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)].Count == 2)
+                i_GameLogic.UpdateRememberValues(m_FirstCard, logicalValueFirstCard);
+                if (i_GameLogic.RememberValues[logicalValueFirstCard].Count == 2)
                 {
-                    m_SecondCard = i_GameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)][0];
+                    m_SecondCard = i_GameLogic.RememberValues[logicalValueFirstCard][0];
                 }
                 else
                 {
-                    chooseRandomDifferentCard(i_Board);
-                    i_GameLogic.UpdateRememberValues(m_SecondCard, i_Board.GetValueFromCellInBoard(m_SecondCard));
+                    chooseRandomDifferentCard(i_Board, i_GameLogic);
+                    int logicalValueSecondCard = i_Board.GetValueFromCellInBoard(m_SecondCard);
+
+                    i_GameLogic.UpdateRememberValues(m_SecondCard, logicalValueSecondCard);
                 }
             }
         }
@@ -52,6 +52,7 @@ namespace Exercise02
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -60,13 +61,28 @@ namespace Exercise02
             chooseRandomCard(i_Board, m_FirstCard);
         }
 
-        private void chooseRandomDifferentCard(GameBoard i_Board)
+        private void chooseRandomDifferentCard(GameBoard i_Board, GameLogic i_GameLogic)
         {
+            bool isCardExist = true;
+
             chooseRandomCard(i_Board, m_SecondCard);
-            while (m_SecondCard[0] == m_FirstCard[0] && m_SecondCard[1] == m_FirstCard[1])
+            while (checkIfCoordinateAreEqual(m_FirstCard, m_SecondCard)
+                || isCardExist)
             {
                 chooseRandomCard(i_Board, m_SecondCard);
+                int logicalValue = i_Board.GetValueFromCellInBoard(m_SecondCard);
+
+                if (i_GameLogic.RememberValues.ContainsKey(logicalValue))
+                {
+                    isCardExist = i_GameLogic.CardExistsInList(m_SecondCard,
+                    i_GameLogic.RememberValues[logicalValue]);
+                }
             }
+        }
+
+        private bool checkIfCoordinateAreEqual(int[] i_CardOne, int[] i_CardTwo)
+        {
+            return i_CardOne[0] == i_CardTwo[0] && i_CardOne[1] == i_CardTwo[1];
         }
 
         private void chooseRandomCard(GameBoard i_Board, int[] i_Card)
@@ -76,6 +92,7 @@ namespace Exercise02
 
             while (isOpenCell)
             {
+
                 i_Card[0] = random.Next(i_Board.Width);
                 i_Card[1] = random.Next(i_Board.Height);
                 isOpenCell = i_Board.IsCellIsOpen(i_Card);

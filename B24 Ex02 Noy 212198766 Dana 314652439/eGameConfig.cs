@@ -1,5 +1,4 @@
-﻿
-namespace Exercise02
+﻿namespace Exercise02
 {
     public enum eGameConfig
     {

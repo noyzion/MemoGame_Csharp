@@ -28,7 +28,8 @@ namespace Exercise02
 
                 UIController.PrintBoard(memoGameBoard);
                 gameStatus = playGame(firstPlayer, secondPlayer, memoGameBoard);
-                if (gameStatus == eGameConfig.CountinueGame || gameStatus == eGameConfig.BoardFull)
+                if (gameStatus == eGameConfig.CountinueGame || 
+                    gameStatus == eGameConfig.BoardFull)
                 {
                     UIController.PrintWinner(firstPlayer, secondPlayer);
                     gameStatus = (eGameConfig)UIController.AskIfThePlayerWantAnotherGame();
@@ -81,10 +82,12 @@ namespace Exercise02
         {
             eGameConfig gameStatus = eGameConfig.CountinueGame;
 
-            while (gameStatus != eGameConfig.EndGame && gameStatus != eGameConfig.BoardFull)
+            while (gameStatus != eGameConfig.EndGame && 
+                   gameStatus != eGameConfig.BoardFull)
             {
                 i_FirstPlayer.IsMyTurn = true;
-                while (gameStatus != eGameConfig.EndGame && i_FirstPlayer.IsMyTurn)
+                while (gameStatus != eGameConfig.EndGame && 
+                       i_FirstPlayer.IsMyTurn)
                 {
                     gameStatus = PlayerTurn(i_FirstPlayer, i_MemoGameBoard);
                 }

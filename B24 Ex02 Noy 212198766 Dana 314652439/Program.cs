@@ -1,5 +1,4 @@
-﻿
-namespace Exercise02
+﻿namespace Exercise02
 {
     public class Program
     {
@@ -7,7 +6,6 @@ namespace Exercise02
         {
             UserInterfaceManager user = new UserInterfaceManager();
             user.RunGame();
-
         }
     }
 }

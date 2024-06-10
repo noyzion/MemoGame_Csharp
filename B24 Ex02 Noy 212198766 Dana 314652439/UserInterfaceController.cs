@@ -30,7 +30,8 @@ namespace Exercise02
             return BoardValues;
         }
 
-        private bool isCharEqualToCardInArr(char[] i_BoardValues, int i_CurrentSize, char i_RandomChar)
+        private bool isCharEqualToCardInArr(char[] i_BoardValues, int i_CurrentSize, 
+                                            char i_RandomChar)
         {
             bool isEqual = false;
             for (int j = 0; j < i_CurrentSize; j++)

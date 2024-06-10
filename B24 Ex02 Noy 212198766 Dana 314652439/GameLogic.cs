@@ -7,7 +7,7 @@ namespace Exercise02
     {
         private Dictionary<int, List<int[]>> m_RememberValues = new Dictionary<int, List<int[]>>();
 
-        public Dictionary<int, List<int[]>>  RememberValues { get { return m_RememberValues; } }
+        public Dictionary<int, List<int[]>> RememberValues { get { return m_RememberValues; } }
 
         public void UpdateRememberValues(int[] i_Card, int i_LogicalValue)
         {
@@ -15,7 +15,7 @@ namespace Exercise02
             {
                 List<int[]> cardList = RememberValues[i_LogicalValue];
 
-                if (!cardExistsInList(i_Card, cardList))
+                if (!CardExistsInList(i_Card, cardList))
                 {
                     cardList.Add(i_Card);
                 }
@@ -48,7 +48,7 @@ namespace Exercise02
             }
         }
 
-        private bool cardExistsInList(int[] i_Card, List<int[]> i_CardList)
+        public bool CardExistsInList(int[] i_Card, List<int[]> i_CardList)
         {
             bool isCardExist = false;
 

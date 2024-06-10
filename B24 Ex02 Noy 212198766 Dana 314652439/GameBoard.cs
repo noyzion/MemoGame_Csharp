@@ -8,7 +8,6 @@ namespace Exercise02
         private Cell[,] m_GameMemoryBoard;
         private int m_Width;
         private int m_Height;
-        private int[] m_CounterValuesFromTheBoard;
 
         private struct Cell
         {
@@ -38,8 +37,6 @@ namespace Exercise02
             if (CheckParityBounds() == eErrorType.NoError)
             {
                 m_GameMemoryBoard = new Cell[Height, Width];
-                int numberOfValuesInBoard = (m_Height * m_Width) / 2;
-                m_CounterValuesFromTheBoard = new int[numberOfValuesInBoard];
                 FillBoardWithLogicValues();
             }
         }
@@ -58,18 +55,19 @@ namespace Exercise02
 
         public void FillBoardWithLogicValues()
         {
+            int[] counterValuesFromTheBoard = new int[m_Height * m_Width / 2];
             Random random = new Random();
 
             for (int i = 0; i < m_Height; i++)
             {
                 for (int j = 0; j < m_Width; j++)
                 {
-                    int nextValue = random.Next(m_CounterValuesFromTheBoard.Length);
-                    while (m_CounterValuesFromTheBoard[nextValue] == 2)
+                    int nextValue = random.Next(counterValuesFromTheBoard.Length);
+                    while (counterValuesFromTheBoard[nextValue] == 2)
                     {
-                        nextValue = random.Next(m_CounterValuesFromTheBoard.Length);
+                        nextValue = random.Next(counterValuesFromTheBoard.Length);
                     }
-                    m_CounterValuesFromTheBoard[nextValue]++;
+                    counterValuesFromTheBoard[nextValue]++;
                     m_GameMemoryBoard[i, j] = new Cell
                     {
                         CardValue = nextValue,
