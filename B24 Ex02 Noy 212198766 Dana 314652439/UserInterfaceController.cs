@@ -117,7 +117,7 @@ namespace Exercise02
             int[] cardValues = new int[2];
             bool validInput = false;
 
-            Console.WriteLine(i_PlayerName + " It's your turn!");
+            Console.WriteLine(i_PlayerName + " it's your turn!");
             while (!validInput)
             {
                 Console.Write("Please enter the next card: ");

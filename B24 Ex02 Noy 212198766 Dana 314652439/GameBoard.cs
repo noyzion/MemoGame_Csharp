@@ -15,8 +15,10 @@ namespace Exercise02
             private bool m_IsCardOpen; //True = open, False = close
 
             public int CardValue { get { return m_LogivalValue; } set { m_LogivalValue = value; } }
+
             public bool IsCardOpen { get { return m_IsCardOpen; } set { m_IsCardOpen = value; } }
         }
+
         public int Width { get { return m_Width; } set { m_Width = value; } }
         public int Height { get { return m_Height; } set { m_Height = value; } }
         public (int height, int width) GameMemoryBoard
