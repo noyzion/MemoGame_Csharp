@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -6,8 +7,8 @@ namespace Exercise02
 {
     public class UserInterfaceManager
     {
-        UserInterfaceController UIController = new UserInterfaceController();
-        GameLogic m_GameLogic = new GameLogic();
+        readonly UserInterfaceController UIController = new UserInterfaceController();
+        readonly GameLogic m_GameLogic = new GameLogic();
         public void RunGame()
         {
             eGameConfig gameStatus = eGameConfig.CountinueGame;
@@ -75,6 +76,7 @@ namespace Exercise02
 
                 if (i_Player.Name == "computer")
                 {
+                    Console.WriteLine("computer's turn!");
                     i_Player.ComputerChooseCards(i_MemoGameBoard, m_GameLogic);
                     i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, true);
                     i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, true);
@@ -94,28 +96,22 @@ namespace Exercise02
                 }
 
                 Ex02.ConsoleUtils.Screen.Clear();
-                m_GameLogic.CheckCardsAndReplaceTurn(i_MemoGameBoard, i_Player);
+                m_GameLogic.CheckCardsAndReplaceTurn(i_Player, i_MemoGameBoard);
 
-                if (i_Player.IsMyTurn)
-                {
-                    UIController.PrintBoard(i_MemoGameBoard);
-                    if (i_Player.Name == "computer")
-                    {
-                        System.Threading.Thread.Sleep(2000);
-                    }
-                }
-                else
-                {
-                    UIController.PrintBoard(i_MemoGameBoard);
-                    System.Threading.Thread.Sleep(2000);
-                    i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, false);
-                    i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, false);
-                    Ex02.ConsoleUtils.Screen.Clear();
-                    UIController.PrintBoard(i_MemoGameBoard);
-                    i_Player.IsMyTurn = false;
-                }
+                UIController.PrintBoard(i_MemoGameBoard);
+                System.Threading.Thread.Sleep(2000);
 
             }
+            if (!i_Player.IsMyTurn)
+            {
+                i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, false);
+                i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, false);
+                Ex02.ConsoleUtils.Screen.Clear();
+                UIController.PrintBoard(i_MemoGameBoard);
+                i_Player.IsMyTurn = false;
+            }
+
+
 
             return fullBoard;
         }

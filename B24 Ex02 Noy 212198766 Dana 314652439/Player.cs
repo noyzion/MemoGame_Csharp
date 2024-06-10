@@ -19,55 +19,49 @@ namespace Exercise02
         public bool IsMyTurn { get { return m_IsMyTurn; } set { m_IsMyTurn = value; } }
         public int[] FirstCard { get { return m_FirstCard; } set { m_FirstCard = value; } }
         public int[] SecondCard { get { return m_SecondCard; } set { m_SecondCard = value; } }
-        public void ComputerChooseCards(GameBoard i_Board, GameLogic i_gameLogic)
+        public void ComputerChooseCards(GameBoard i_Board, GameLogic gameLogic)
         {
-            int rememberListIndex = 0;
-            bool foundCard = false;
-            while (rememberListIndex < i_gameLogic.RememberValues.Capacity && !foundCard)
+            bool foundCards = false;
+            foreach (KeyValuePair<int, List<int[]>> pair in gameLogic.RememberValues)
             {
-                if (i_gameLogic.RememberValues[rememberListIndex] != null)
+                if (pair.Value.Count == 2 && !foundCards)
                 {
-                    if (i_gameLogic.RememberValues[rememberListIndex].HowManyTimesOpened == 2)
-                    {
-                        m_FirstCard = i_gameLogic.RememberValues[rememberListIndex].CardOneCoordinate;
-                        m_SecondCard = i_gameLogic.RememberValues[rememberListIndex].CardTwoCoordinate;
-                        foundCard = true;
-                    }
+                    m_FirstCard = gameLogic.RememberValues[pair.Key][0];
+                    m_SecondCard = gameLogic.RememberValues[pair.Key][1];
+                    foundCards = true;
                 }
-                rememberListIndex++;
             }
-            if (!foundCard)
+            if (!foundCards)
             {
-                Random random = new Random();
-                
-                m_FirstCard[0] = random.Next(i_Board.Width);
-                m_FirstCard[1] = random.Next(i_Board.Height);
-                while (i_Board.IsCellIsOpen(m_FirstCard))
+                chooseRandomCard(i_Board, m_FirstCard);
+                 gameLogic.UpdateRememberValues(m_FirstCard, i_Board.GetValueFromCellInBoard(m_FirstCard));
+                if (gameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)].Count == 2)
                 {
-                    m_FirstCard[0] = random.Next(i_Board.Width);
-                    m_FirstCard[1] = random.Next(i_Board.Height);
-                }
-                i_gameLogic.UpdateRememberList(m_FirstCard, i_Board.GetValueFromCellInBoard(m_FirstCard));
-
-                if (i_gameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)].HowManyTimesOpened == 2)
-                {
-                    m_SecondCard = i_gameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)].CardOneCoordinate;
+                    m_SecondCard = gameLogic.RememberValues[i_Board.GetValueFromCellInBoard(m_FirstCard)][0];
                 }
                 else
                 {
-                    m_SecondCard[0] = random.Next(i_Board.Width);
-                    m_SecondCard[1] = random.Next(i_Board.Height);
-                    while (i_Board.IsCellIsOpen(m_SecondCard)
-                        || (m_SecondCard[0] == m_FirstCard[0] && m_SecondCard[1] == m_FirstCard[1]))
+                    chooseRandomCard(i_Board, m_SecondCard);
+                    while (m_SecondCard[0] == m_FirstCard[0] && m_SecondCard[1] == m_FirstCard[1])
                     {
-                        m_SecondCard[0] = random.Next(i_Board.Width);
-                        m_SecondCard[1] = random.Next(i_Board.Height);
+                        chooseRandomCard(i_Board, m_SecondCard);
                     }
-                    i_gameLogic.UpdateRememberList(m_SecondCard, i_Board.GetValueFromCellInBoard(m_SecondCard));
-
+                    gameLogic.UpdateRememberValues(m_SecondCard, i_Board.GetValueFromCellInBoard(m_SecondCard));
                 }
             }
         }
 
+
+        private void chooseRandomCard(GameBoard i_Board, int[] i_Card)
+        {
+            Random random = new Random();
+            bool isOpenCell = true;
+            while (isOpenCell)
+            {
+                i_Card[0] = random.Next(i_Board.Width);
+                i_Card[1] = random.Next(i_Board.Height);
+                isOpenCell = i_Board.IsCellIsOpen(i_Card);
+            }
+        }
     }
 }
