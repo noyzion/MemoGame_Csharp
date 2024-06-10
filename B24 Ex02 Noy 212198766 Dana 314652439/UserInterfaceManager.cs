@@ -114,11 +114,12 @@ namespace Exercise02
                 m_GameLogic.CheckCardsAndReplaceTurn(i_Player, i_MemoGameBoard);
                 UIController.PrintBoard(i_MemoGameBoard);
                 System.Threading.Thread.Sleep(2000);
-            }
 
-            if (!i_Player.IsMyTurn)
-            {
-                closePlayerCards(i_Player, i_MemoGameBoard);
+                if (!i_Player.IsMyTurn)
+                {
+                    closePlayerCards(i_Player, i_MemoGameBoard);
+                }
+
             }
 
             return fullBoard;
