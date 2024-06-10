@@ -122,8 +122,8 @@ namespace Exercise02
             {
                 Console.Write("Please enter the next card: ");
                 string card = Console.ReadLine();
-
-                if (card[0] == (char)eGameConfig.QuitGame || card[1] == (char)eGameConfig.QuitGame)
+                
+                if (card[0] == (char)eGameConfig.QuitGame)
                 {
                     Console.WriteLine("Quiting game!");
                     cardValues = null;
@@ -174,13 +174,13 @@ namespace Exercise02
                     isValid = false;
                 }
             }
-            return isValid;
 
+            return isValid;
         }
 
         private bool checkIfIntegers(string i_Width, string i_Height)
         {
-            bool areIntegers = int.TryParse(i_Width, out _) && int.TryParse(i_Height, out _);
+            bool areIntegers = int.TryParse(i_Width, out int width) && int.TryParse(i_Height, out int height);
             if (!areIntegers)
             {
                 PrintError(eErrorType.NotAnInteger);
@@ -231,9 +231,9 @@ namespace Exercise02
             }
         }
 
-        private bool isOneOrTwoValidCheck(int i_userInput)
+        private bool isOneOrTwoValidCheck(int i_UserInput)
         {
-            return (i_userInput == 1 || i_userInput == 2);
+            return (i_UserInput == 1 || i_UserInput == 2);
         }
 
         public int AskIfThePlayerWantAnotherGame()

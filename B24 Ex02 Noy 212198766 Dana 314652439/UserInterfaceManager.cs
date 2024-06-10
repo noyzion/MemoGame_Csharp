@@ -168,6 +168,7 @@
 
             return gameStatus;
         }
+
         private void closePlayerCards(Player i_Player, GameBoard i_MemoGameBoard)
         {
             i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, false);
