@@ -13,26 +13,27 @@ namespace Exercise02
         {
             Random random = new Random();
             char[] BoardValues = new char[(i_MemoGameBoard.Width * i_MemoGameBoard.Height) / 2];
+
             for (int i = 0; i < BoardValues.Length; i++)
             {
 
                 char nextLetter = (char)random.Next('A', 'Z');
-                while (IsCharEqualToCardInArr(BoardValues, i, nextLetter))
+
+                while (isCharEqualToCardInArr(BoardValues, i, nextLetter))
                 {
                     nextLetter = (char)random.Next('A', 'Z');
                 }
+
                 BoardValues[i] = nextLetter;
-
-
             }
-            return BoardValues;
 
+            return BoardValues;
         }
 
-        public bool IsCharEqualToCardInArr(char[] i_BoardValues, int i_CurrentSize, char i_RandomChar)
+        private bool isCharEqualToCardInArr(char[] i_BoardValues, int i_CurrentSize, char i_RandomChar)
         {
             bool isEqual = false;
-            for(int j = 0; j < i_CurrentSize; j++)
+            for (int j = 0; j < i_CurrentSize; j++)
             {
                 if (i_BoardValues[j] == i_RandomChar)
                 {
@@ -42,18 +43,20 @@ namespace Exercise02
             return isEqual;
         }
 
-        public void MatchLogicalValueToChar(GameBoard i_MemoGameBoard,char[] i_BoardValues)
+        public void MatchLogicalValueToChar(GameBoard i_MemoGameBoard, char[] i_BoardValues)
         {
             int amountOfValues = (i_MemoGameBoard.Width * i_MemoGameBoard.Height) / 2;
-            m_MatchingBoardValues = new char[amountOfValues];
             int valuesIndex = 0;
+            m_MatchingBoardValues = new char[amountOfValues];
+
             for (int i = 0; i < i_MemoGameBoard.Height && valuesIndex < amountOfValues; i++)
             {
                 for (int j = 0; j < i_MemoGameBoard.Width && valuesIndex < amountOfValues; j++)
                 {
                     int[] card = { j, i };
                     int LogicalValueFromCellInBoard = i_MemoGameBoard.GetValueFromCellInBoard(card);
-                    if (m_MatchingBoardValues[LogicalValueFromCellInBoard] == '\0' )
+
+                    if (m_MatchingBoardValues[LogicalValueFromCellInBoard] == '\0')
                     {
                         m_MatchingBoardValues[LogicalValueFromCellInBoard] = i_BoardValues[valuesIndex];
                         valuesIndex++;
@@ -61,6 +64,7 @@ namespace Exercise02
                 }
             }
         }
+
         public string GetPlayerName()
         {
             Console.Write("Please enter your name: ");
@@ -81,14 +85,15 @@ namespace Exercise02
                 Console.Write("Please enter the board height: ");
                 string boardHeight = Console.ReadLine();
 
-                if (CheckIfIntegers(boardWidth, boardHeight))
+                if (checkIfIntegers(boardWidth, boardHeight))
                 {
                     o_Width = int.Parse(boardWidth);
                     o_Height = int.Parse(boardHeight);
-                    validInput = IsValidBoardSize(o_Width, o_Height);
+                    validInput = isValidBoardSize(o_Width, o_Height);
                 }
             }
         }
+
         public int GetAndCheckIfSecondPlayerCompOrHuman()
         {
             Console.WriteLine("Would you like to compete against another human " +
@@ -96,25 +101,28 @@ namespace Exercise02
             Console.WriteLine("(1) Computer");
             Console.WriteLine("(2) Human");
             bool checkIfNumber = int.TryParse(Console.ReadLine().ToString(), out int playerOrComp);
-            if (!IsOneOrTwoValidCheck(playerOrComp) || !checkIfNumber)
+
+            if (!isOneOrTwoValidCheck(playerOrComp) || !checkIfNumber)
             {
                 PrintError(eErrorType.InvalidInput);
                 playerOrComp = GetAndCheckIfSecondPlayerCompOrHuman();
             }
+
             return playerOrComp;
         }
-        public int[] GetNextCard(GameBoard i_MemoGameBoard,string i_name)
+
+        public int[] GetNextCard(GameBoard i_MemoGameBoard, string i_PlayerName)
         {
             int[] cardValues = new int[2];
             bool validInput = false;
 
-            Console.WriteLine(i_name + " It's your turn!");
+            Console.WriteLine(i_PlayerName + " It's your turn!");
             while (!validInput)
             {
                 Console.Write("Please enter the next card: ");
                 string card = Console.ReadLine();
 
-                if (IsValidCard(card))
+                if (isValidCard(card))
                 {
                     cardValues[0] = char.Parse(card[0].ToString()) - 'A';
                     cardValues[1] = int.Parse(card.Substring(1)) - 1;
@@ -133,22 +141,23 @@ namespace Exercise02
 
             return cardValues;
         }
-        public bool IsValidCard(string i_card)
+
+        private bool isValidCard(string i_Card)
         {
             bool isValid = true;
-            if (i_card.Length != 2)
+            if (i_Card.Length != 2)
             {
                 PrintError(eErrorType.InvalidInput);
                 isValid = false;
             }
             else
             {
-                if (i_card[0] < 'A' || i_card[0] > 'Z')
+                if (i_Card[0] < 'A' || i_Card[0] > 'Z')
                 {
                     PrintError(eErrorType.NotALetter);
                     isValid = false;
                 }
-                bool checkIfNumber = int.TryParse(i_card[1].ToString(), out int numberInCard);
+                bool checkIfNumber = int.TryParse(i_Card[1].ToString(), out int numberInCard);
                 if (numberInCard < 1 || !checkIfNumber)
                 {
                     PrintError(eErrorType.NotAnInteger);
@@ -158,7 +167,8 @@ namespace Exercise02
             return isValid;
 
         }
-        public bool  CheckIfIntegers(string i_Width, string i_Height)
+
+        private bool checkIfIntegers(string i_Width, string i_Height)
         {
             bool areIntegers = int.TryParse(i_Width, out _) && int.TryParse(i_Height, out _);
             if (!areIntegers)
@@ -167,18 +177,21 @@ namespace Exercise02
             }
             return areIntegers;
         }
-        public bool IsValidBoardSize(int i_Width, int i_Height)
+
+        private bool isValidBoardSize(int i_Width, int i_Height)
         {
             bool isValidBoardSize = true;
-            if( i_Width < k_MinBoardSize || i_Height < k_MinBoardSize
+
+            if (i_Width < k_MinBoardSize || i_Height < k_MinBoardSize
                 || i_Width > k_MaxBoardSize || i_Height > k_MaxBoardSize)
             {
                 isValidBoardSize = false;
                 PrintError(eErrorType.OutOfBounds);
             }
-            return isValidBoardSize;
 
+            return isValidBoardSize;
         }
+
         public void PrintError(eErrorType i_ErrorType)
         {
             switch (i_ErrorType)
@@ -205,27 +218,30 @@ namespace Exercise02
                     System.Console.WriteLine("Invalid input. First character " +
                                        "should be a letter between A-Z. Try Again.");
                     break;
-
             }
-
         }
-        public bool IsOneOrTwoValidCheck(int i_userInput)
+
+        private bool isOneOrTwoValidCheck(int i_userInput)
         {
             return (i_userInput == 1 || i_userInput == 2);
         }
+
         public int AskIfThePlayerWantAnotherGame()
         {
             Console.WriteLine("Would you like to play another game?");
             Console.WriteLine("(1) yes");
             Console.WriteLine("(2) no");
             bool checkIfNumber = int.TryParse(Console.ReadLine().ToString(), out int anotherGame);
-            if (!IsOneOrTwoValidCheck(anotherGame) || !checkIfNumber)
+
+            if (!isOneOrTwoValidCheck(anotherGame) || !checkIfNumber)
             {
                 PrintError(eErrorType.InvalidInput);
                 anotherGame = AskIfThePlayerWantAnotherGame();
             }
+
             return anotherGame;
         }
+
         public void PrintBoard(GameBoard i_MemoGameBoard)
         {
             StringBuilder boardBase = new StringBuilder();
@@ -264,16 +280,18 @@ namespace Exercise02
             }
             Console.WriteLine(boardBase.ToString());
         }
+
         public void PrintPlayersScore(Player i_FirstPlayer, Player i_SecondPlayer)
         {
             Console.Write("{0} score: {1}", i_FirstPlayer.Name, i_FirstPlayer.Score);
             Console.Write("     ");
             Console.WriteLine("{0} score: {1}", i_SecondPlayer.Name, i_SecondPlayer.Score);
         }
-        public void PrintWinner(Player i_FirstPlayer,Player i_SecondPlayer)
+
+        public void PrintWinner(Player i_FirstPlayer, Player i_SecondPlayer)
         {
-            PrintPlayersScore(i_FirstPlayer,i_SecondPlayer);
-            if(i_FirstPlayer.Score > i_SecondPlayer.Score)
+            PrintPlayersScore(i_FirstPlayer, i_SecondPlayer);
+            if (i_FirstPlayer.Score > i_SecondPlayer.Score)
             {
                 Console.WriteLine("Congrats! {0} you are the winner!", i_FirstPlayer.Name);
             }
@@ -287,6 +305,4 @@ namespace Exercise02
             }
         }
     }
-
-
 }

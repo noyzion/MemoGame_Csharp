@@ -10,21 +10,13 @@ namespace Exercise02
 
         public Dictionary<int, List<int[]>>  RememberValues { get { return m_RememberValues; } }
 
-        public void UpdateRememberValues( int[] i_Card, int i_LogicalValue)
+        public void UpdateRememberValues(int[] i_Card, int i_LogicalValue)
         {
-            bool cardExist = false;
-
-            if (m_RememberValues.ContainsKey(i_LogicalValue))
+            if (RememberValues.ContainsKey(i_LogicalValue))
             {
-                List<int[]> cardList = m_RememberValues[i_LogicalValue];
-                foreach (int[] existingCard in cardList)
-                {
-                    if (!cardExist)
-                    {
-                        cardExist = (existingCard[0] == i_Card[0] && existingCard[1] == i_Card[1]);
-                    }
-                }
-                if (!cardExist)
+                List<int[]> cardList = RememberValues[i_LogicalValue];
+
+                if (!cardExistsInList(i_Card, cardList))
                 {
                     cardList.Add(i_Card);
                 }
@@ -35,7 +27,6 @@ namespace Exercise02
                 cardCoordinates.Add(i_Card);
                 m_RememberValues.Add(i_LogicalValue, cardCoordinates);
             }
-
         }
 
         public void CheckCardsAndReplaceTurn(Player i_Player, GameBoard i_Board)
@@ -46,7 +37,7 @@ namespace Exercise02
             int logicalValueSecondCard = i_Board.GetValueFromCellInBoard(i_Player.SecondCard);
             UpdateRememberValues(i_Player.SecondCard, logicalValueSecondCard);
 
-            if(logicalValueFirstCard == logicalValueSecondCard)
+            if (logicalValueFirstCard == logicalValueSecondCard)
             {
                 m_RememberValues.Remove(logicalValueSecondCard);
                 i_Player.IsMyTurn = true;
@@ -55,9 +46,22 @@ namespace Exercise02
             else
             {
                 i_Player.IsMyTurn = false;
+            }
+        }
 
+        private bool cardExistsInList(int[] i_Card, List<int[]> i_CardList)
+        {
+            bool isCardExist = false;
+
+            foreach (int[] existingCard in i_CardList)
+            {
+                if (!isCardExist)
+                {
+                    isCardExist = (existingCard[0] == i_Card[0] && existingCard[1] == i_Card[1]);
+                }
             }
 
+            return isCardExist;
         }
     }
 }

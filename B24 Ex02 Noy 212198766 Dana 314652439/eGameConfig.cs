@@ -1,5 +1,4 @@
 ﻿
-
 namespace Exercise02
 {
     public enum eGameConfig
@@ -9,6 +8,5 @@ namespace Exercise02
         EndGame,
         CountinueGame,
         QuitGame = 'Q'
-
     }
 }
