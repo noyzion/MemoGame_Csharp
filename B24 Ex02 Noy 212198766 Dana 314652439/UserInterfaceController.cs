@@ -122,19 +122,28 @@ namespace Exercise02
                 Console.Write("Please enter the next card: ");
                 string card = Console.ReadLine();
 
-                if (isValidCard(card))
+                if (card[0] == (char)eGameConfig.QuitGame || card[1] == (char)eGameConfig.QuitGame)
                 {
-                    cardValues[0] = char.Parse(card[0].ToString()) - 'A';
-                    cardValues[1] = int.Parse(card.Substring(1)) - 1;
+                    Console.WriteLine("Quiting game!");
+                    cardValues = null;
+                    validInput = true;
+                }
+                else
+                {
+                    if (isValidCard(card))
+                    {
+                        cardValues[0] = char.Parse(card[0].ToString()) - 'A';
+                        cardValues[1] = int.Parse(card.Substring(1)) - 1;
 
-                    eErrorType isCellValid = i_MemoGameBoard.IsCellIsValid(cardValues);
-                    if (isCellValid == eErrorType.NoError)
-                    {
-                        validInput = true;
-                    }
-                    else
-                    {
-                        PrintError(isCellValid);
+                        eErrorType isCellValid = i_MemoGameBoard.IsCellIsValid(cardValues);
+                        if (isCellValid == eErrorType.NoError)
+                        {
+                            validInput = true;
+                        }
+                        else
+                        {
+                            PrintError(isCellValid);
+                        }
                     }
                 }
             }

@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 
 namespace Exercise02
@@ -24,11 +25,15 @@ namespace Exercise02
             while (gameStatus == eGameConfig.AnotherGame)
             {
                 GameBoard memoGameBoard = createGameBoard();
+
                 UIController.PrintBoard(memoGameBoard);
-                playGame(firstPlayer, secondPlayer, memoGameBoard);
-                UIController.PrintWinner(firstPlayer, secondPlayer);
-                gameStatus = (eGameConfig)UIController.AskIfThePlayerWantAnotherGame();
-                Ex02.ConsoleUtils.Screen.Clear();
+                gameStatus = playGame(firstPlayer, secondPlayer, memoGameBoard);
+                if (gameStatus == eGameConfig.CountinueGame)
+                {
+                    UIController.PrintWinner(firstPlayer, secondPlayer);
+                    gameStatus = (eGameConfig)UIController.AskIfThePlayerWantAnotherGame();
+                    Ex02.ConsoleUtils.Screen.Clear();
+                }
             }
         }
 
@@ -72,24 +77,29 @@ namespace Exercise02
             return secondPlayer;
         }
 
-        private void playGame(Player i_FirstPlayer, Player i_SecondPlayer, GameBoard i_MemoGameBoard)
+        private eGameConfig playGame(Player i_FirstPlayer, Player i_SecondPlayer, GameBoard i_MemoGameBoard)
         {
             eGameConfig gameStatus = eGameConfig.CountinueGame;
 
             while (gameStatus != eGameConfig.EndGame)
             {
                 i_FirstPlayer.IsMyTurn = true;
-                while (i_FirstPlayer.IsMyTurn && gameStatus != eGameConfig.EndGame)
+                while (gameStatus != eGameConfig.EndGame && i_FirstPlayer.IsMyTurn)
                 {
                     gameStatus = PlayerTurn(i_FirstPlayer, i_MemoGameBoard);
                 }
                 i_SecondPlayer.IsMyTurn = true;
-                while (i_SecondPlayer.IsMyTurn && gameStatus != eGameConfig.EndGame)
+                while ( gameStatus != eGameConfig.EndGame && i_SecondPlayer.IsMyTurn)
                 {
                     gameStatus = PlayerTurn(i_SecondPlayer, i_MemoGameBoard);
                 }
-                gameStatus = i_MemoGameBoard.IsBoardFull();
+                if (gameStatus != eGameConfig.EndGame)
+                {
+                    gameStatus = i_MemoGameBoard.IsBoardFull();
+                }
             }
+            
+            return gameStatus;
         }
 
         public eGameConfig PlayerTurn(Player i_Player, GameBoard i_MemoGameBoard)
@@ -97,9 +107,9 @@ namespace Exercise02
             i_Player.FirstCard.Initialize();
             i_Player.SecondCard.Initialize();
 
-            eGameConfig fullBoard = i_MemoGameBoard.IsBoardFull();
+            eGameConfig gameStatus = i_MemoGameBoard.IsBoardFull();
 
-            if (fullBoard == eGameConfig.CountinueGame)
+            if (gameStatus == eGameConfig.CountinueGame)
             {
                 if (i_Player.Name == "computer")
                 {
@@ -107,22 +117,22 @@ namespace Exercise02
                 }
                 else
                 {
-                    performHumanTurn(i_Player, i_MemoGameBoard);
+                   gameStatus = performHumanTurn(i_Player, i_MemoGameBoard);
                 }
-
-                Ex02.ConsoleUtils.Screen.Clear();
-                m_GameLogic.CheckCardsAndReplaceTurn(i_Player, i_MemoGameBoard);
-                UIController.PrintBoard(i_MemoGameBoard);
-                System.Threading.Thread.Sleep(2000);
-
-                if (!i_Player.IsMyTurn)
+                if (gameStatus == eGameConfig.CountinueGame)
                 {
-                    closePlayerCards(i_Player, i_MemoGameBoard);
+                    Ex02.ConsoleUtils.Screen.Clear();
+                    m_GameLogic.CheckCardsAndReplaceTurn(i_Player, i_MemoGameBoard);
+                    UIController.PrintBoard(i_MemoGameBoard);
+                    System.Threading.Thread.Sleep(2000);
+                    if (!i_Player.IsMyTurn)
+                    {
+                        closePlayerCards(i_Player, i_MemoGameBoard);
+                    }
                 }
-
             }
 
-            return fullBoard;
+            return gameStatus;
         }
 
         private void performComputerTurn(Player i_Player, GameBoard i_MemoGameBoard)
@@ -132,16 +142,33 @@ namespace Exercise02
             i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, true);
         }
 
-        private void performHumanTurn(Player i_Player, GameBoard i_MemoGameBoard)
+        private eGameConfig performHumanTurn(Player i_Player, GameBoard i_MemoGameBoard)
         {
-            i_Player.FirstCard = UIController.GetNextCard(i_MemoGameBoard, i_Player.Name);
-            Ex02.ConsoleUtils.Screen.Clear();
-            i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, true);
-            UIController.PrintBoard(i_MemoGameBoard);
-            i_Player.SecondCard = UIController.GetNextCard(i_MemoGameBoard, i_Player.Name);
-            i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, true);
-        }
+            eGameConfig gameStatus = eGameConfig.CountinueGame;
 
+            i_Player.FirstCard = UIController.GetNextCard(i_MemoGameBoard, i_Player.Name);
+            if (i_Player.FirstCard == null)
+            {
+                gameStatus = eGameConfig.EndGame;
+            }
+            else
+            { 
+                Ex02.ConsoleUtils.Screen.Clear();
+                i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, true);
+                UIController.PrintBoard(i_MemoGameBoard);
+                i_Player.SecondCard = UIController.GetNextCard(i_MemoGameBoard, i_Player.Name);
+                if (i_Player.SecondCard != null)
+                {
+                    i_MemoGameBoard.UpdateBoard(i_Player.SecondCard, true);
+                }
+                else
+                {
+                    gameStatus = eGameConfig.EndGame;
+                }
+            }
+
+            return gameStatus;
+        }
         private void closePlayerCards(Player i_Player, GameBoard i_MemoGameBoard)
         {
             i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, false);
