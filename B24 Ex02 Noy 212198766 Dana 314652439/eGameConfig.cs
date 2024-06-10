@@ -7,6 +7,7 @@ namespace Exercise02
         Human = 2,
         EndGame,
         CountinueGame,
+        BoardFull,
         QuitGame = 'Q'
     }
 }

@@ -87,6 +87,7 @@ namespace Exercise02
         public eErrorType IsCellIsValid(int[] i_Card)
         {
             eErrorType errorType = eErrorType.NoError;
+
             if (IsCellNotInBounds(i_Card))
             {
                 errorType = eErrorType.OutOfBounds;
@@ -115,7 +116,8 @@ namespace Exercise02
 
         public eGameConfig IsBoardFull()
         {
-            eGameConfig isBoardFull = eGameConfig.EndGame;
+            eGameConfig isBoardFull = eGameConfig.BoardFull;
+
             for (int i = 0; i < m_Height; i++)
             {
                 for (int j = 0; j < m_Width; j++)
