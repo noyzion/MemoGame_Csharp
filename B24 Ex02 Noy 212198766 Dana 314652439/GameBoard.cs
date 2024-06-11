@@ -21,14 +21,14 @@ namespace Exercise02
 
         public int Width { get { return m_Width; } set { m_Width = value; } }
         public int Height { get { return m_Height; } set { m_Height = value; } }
-        public (int height, int width) GameMemoryBoard
+        public (int i_Height, int i_Width) GameMemoryBoard
         {
             get { return (m_Height, m_Width); }
             set
             {
-                m_Height = value.height;
-                m_Width = value.width;
-                m_GameMemoryBoard = new Cell[value.height, value.width];
+                m_Height = value.i_Height;
+                m_Width = value.i_Width;
+                m_GameMemoryBoard = new Cell[value.i_Height, value.i_Width];
             }
         }
 
