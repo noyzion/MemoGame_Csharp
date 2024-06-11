@@ -1,6 +1,4 @@
-﻿
-
-namespace Exercise02
+﻿namespace Exercise02
 {
     public enum eErrorType
     {
@@ -12,6 +10,5 @@ namespace Exercise02
         NotAnInteger,
         InvalidInput,
         NotALetter
-
     }
 }
