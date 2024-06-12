@@ -1,5 +1,4 @@
-﻿using Ex02;
-using System;
+﻿using System;
 
 namespace Exercise02
 {
@@ -65,10 +64,12 @@ namespace Exercise02
                 for (int j = 0; j < m_Width; j++)
                 {
                     int nextValue = random.Next(counterValuesFromTheBoard.Length);
+
                     while (counterValuesFromTheBoard[nextValue] == 2)
                     {
                         nextValue = random.Next(counterValuesFromTheBoard.Length);
                     }
+
                     counterValuesFromTheBoard[nextValue]++;
                     m_GameMemoryBoard[i, j] = new Cell
                     {
@@ -96,6 +97,7 @@ namespace Exercise02
             {
                 errorType = eErrorType.NoSuchCell;
             }
+
             return errorType;
         }
 
@@ -106,7 +108,8 @@ namespace Exercise02
 
         public bool IsCellNotInBounds(int[] i_Card)
         {
-            return (i_Card[0] < 0 || i_Card[0] >= m_Width || i_Card[1] < 0 || i_Card[1] >= m_Height);
+            return (i_Card[0] < 0 || i_Card[0] >= m_Width ||
+                    i_Card[1] < 0 || i_Card[1] >= m_Height);
         }
 
         public int GetValueFromCellInBoard(int[] i_Card)
@@ -128,6 +131,7 @@ namespace Exercise02
                     }
                 }
             }
+
             return isBoardFull;
         }
     }

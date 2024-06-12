@@ -12,28 +12,28 @@ namespace Exercise02
         public char[] ShuffleCharValuesForTheBoard(GameBoard i_MemoGameBoard)
         {
             Random random = new Random();
-            char[] BoardValues = new char[(i_MemoGameBoard.Width * i_MemoGameBoard.Height) / 2];
+            char[] boardValues = new char[(i_MemoGameBoard.Width * i_MemoGameBoard.Height) / 2];
 
-            for (int i = 0; i < BoardValues.Length; i++)
+            for (int i = 0; i < boardValues.Length; i++)
             {
-
                 char nextLetter = (char)random.Next('A', 'Z');
 
-                while (isCharEqualToCardInArr(BoardValues, i, nextLetter))
+                while (isCharEqualToCardInArr(boardValues, i, nextLetter))
                 {
                     nextLetter = (char)random.Next('A', 'Z');
                 }
 
-                BoardValues[i] = nextLetter;
+                boardValues[i] = nextLetter;
             }
 
-            return BoardValues;
+            return boardValues;
         }
 
-        private bool isCharEqualToCardInArr(char[] i_BoardValues, int i_CurrentSize, 
+        private bool isCharEqualToCardInArr(char[] i_BoardValues, int i_CurrentSize,
                                             char i_RandomChar)
         {
             bool isEqual = false;
+
             for (int j = 0; j < i_CurrentSize; j++)
             {
                 if (i_BoardValues[j] == i_RandomChar)
@@ -41,6 +41,7 @@ namespace Exercise02
                     isEqual = true;
                 }
             }
+
             return isEqual;
         }
 
@@ -48,18 +49,18 @@ namespace Exercise02
         {
             int amountOfValues = (i_MemoGameBoard.Width * i_MemoGameBoard.Height) / 2;
             int valuesIndex = 0;
-            m_MatchingBoardValues = new char[amountOfValues];
 
+            m_MatchingBoardValues = new char[amountOfValues];
             for (int i = 0; i < i_MemoGameBoard.Height && valuesIndex < amountOfValues; i++)
             {
                 for (int j = 0; j < i_MemoGameBoard.Width && valuesIndex < amountOfValues; j++)
                 {
                     int[] card = { j, i };
-                    int LogicalValueFromCellInBoard = i_MemoGameBoard.GetValueFromCellInBoard(card);
+                    int logicalValueFromCellInBoard = i_MemoGameBoard.GetValueFromCellInBoard(card);
 
-                    if (m_MatchingBoardValues[LogicalValueFromCellInBoard] == '\0')
+                    if (m_MatchingBoardValues[logicalValueFromCellInBoard] == '\0')
                     {
-                        m_MatchingBoardValues[LogicalValueFromCellInBoard] = i_BoardValues[valuesIndex];
+                        m_MatchingBoardValues[logicalValueFromCellInBoard] = i_BoardValues[valuesIndex];
                         valuesIndex++;
                     }
                 }
@@ -70,6 +71,7 @@ namespace Exercise02
         {
             Console.Write("Please enter your name: ");
             string playerName = Console.ReadLine();
+
             return playerName;
         }
 
@@ -83,6 +85,7 @@ namespace Exercise02
             {
                 Console.Write("Please enter the board width: ");
                 string boardWidth = Console.ReadLine();
+
                 Console.Write("Please enter the board height: ");
                 string boardHeight = Console.ReadLine();
 
@@ -122,7 +125,7 @@ namespace Exercise02
             {
                 Console.Write("Please enter the next card: ");
                 string card = Console.ReadLine();
-                
+
                 if (card[0] == (char)eGameConfig.QuitGame)
                 {
                     Console.WriteLine("Quiting game!");
@@ -135,8 +138,8 @@ namespace Exercise02
                     {
                         cardValues[0] = char.Parse(card[0].ToString()) - 'A';
                         cardValues[1] = int.Parse(card.Substring(1)) - 1;
-
                         eErrorType isCellValid = i_MemoGameBoard.IsCellIsValid(cardValues);
+
                         if (isCellValid == eErrorType.NoError)
                         {
                             validInput = true;
@@ -155,6 +158,7 @@ namespace Exercise02
         private bool isValidCard(string i_Card)
         {
             bool isValid = true;
+
             if (i_Card.Length != 2)
             {
                 PrintError(eErrorType.InvalidInput);
@@ -167,7 +171,9 @@ namespace Exercise02
                     PrintError(eErrorType.NotALetter);
                     isValid = false;
                 }
+
                 bool checkIfNumber = int.TryParse(i_Card[1].ToString(), out int numberInCard);
+
                 if (numberInCard < 1 || !checkIfNumber)
                 {
                     PrintError(eErrorType.NotAnInteger);
@@ -180,11 +186,14 @@ namespace Exercise02
 
         private bool checkIfIntegers(string i_Width, string i_Height)
         {
-            bool areIntegers = int.TryParse(i_Width, out int width) && int.TryParse(i_Height, out int height);
+            bool areIntegers = int.TryParse(i_Width, out int width) &&
+                                int.TryParse(i_Height, out int height);
+
             if (!areIntegers)
             {
                 PrintError(eErrorType.NotAnInteger);
             }
+
             return areIntegers;
         }
 
@@ -255,15 +264,16 @@ namespace Exercise02
         public void PrintBoard(GameBoard i_MemoGameBoard)
         {
             StringBuilder boardBase = new StringBuilder();
+
             boardBase.Append("    ");
             for (int i = 0; i < i_MemoGameBoard.Width; i++)
             {
                 boardBase.Append((char)('A' + i) + "   ");
             }
+
             boardBase.AppendLine();
             boardBase.Append("  ");
             boardBase.Append('=', k_MinBoardSize * i_MemoGameBoard.Width + 1).AppendLine();
-
             for (int i = 0; i < i_MemoGameBoard.Height; i++)
             {
                 boardBase.Append(i + 1 + " ");
@@ -271,10 +281,12 @@ namespace Exercise02
                 {
                     boardBase.Append('|');
                     int[] card = { j, i };
+
                     if (i_MemoGameBoard.IsCellIsOpen(card))
                     {
                         boardBase.Append(" ");
                         int logicalValue = i_MemoGameBoard.GetValueFromCellInBoard(card);
+
                         boardBase.Append(m_MatchingBoardValues[logicalValue]);
                         boardBase.Append(" ");
                     }
@@ -283,11 +295,13 @@ namespace Exercise02
                         boardBase.Append("   ");
                     }
                 }
+
                 boardBase.Append('|');
                 boardBase.AppendLine();
                 boardBase.Append("  ");
                 boardBase.Append('=', k_MinBoardSize * i_MemoGameBoard.Width + 1).AppendLine();
             }
+
             Console.WriteLine(boardBase.ToString());
         }
 

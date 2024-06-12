@@ -23,6 +23,7 @@ namespace Exercise02
             else
             {
                 List<int[]> cardCoordinates = new List<int[]>();
+
                 cardCoordinates.Add(i_Card);
                 m_RememberValues.Add(i_LogicalValue, cardCoordinates);
             }
@@ -31,11 +32,11 @@ namespace Exercise02
         public void CheckCardsAndReplaceTurn(Player i_Player, GameBoard i_Board)
         {
             int logicalValueFirstCard = i_Board.GetValueFromCellInBoard(i_Player.FirstCard);
+
             UpdateRememberValues(i_Player.FirstCard, logicalValueFirstCard);
-
             int logicalValueSecondCard = i_Board.GetValueFromCellInBoard(i_Player.SecondCard);
-            UpdateRememberValues(i_Player.SecondCard, logicalValueSecondCard);
 
+            UpdateRememberValues(i_Player.SecondCard, logicalValueSecondCard);
             if (logicalValueFirstCard == logicalValueSecondCard)
             {
                 m_RememberValues.Remove(logicalValueSecondCard);

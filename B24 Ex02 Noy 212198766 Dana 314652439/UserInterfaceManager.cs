@@ -23,7 +23,7 @@
 
                 r_UIController.PrintBoard(memoGameBoard);
                 gameStatus = playGame(firstPlayer, secondPlayer, memoGameBoard);
-                if (gameStatus == eGameConfig.CountinueGame || 
+                if (gameStatus == eGameConfig.CountinueGame ||
                     gameStatus == eGameConfig.BoardFull)
                 {
                     r_UIController.PrintWinner(firstPlayer, secondPlayer);
@@ -46,14 +46,18 @@
             }
 
             char[] valuesForTheBoard = r_UIController.ShuffleCharValuesForTheBoard(memoGameBoard);
+
             r_UIController.MatchLogicalValueToChar(memoGameBoard, valuesForTheBoard);
+
             return memoGameBoard;
         }
 
         private Player initializePlayer(string i_PlayerName)
         {
             Player player = new Player();
+
             player.Name = i_PlayerName;
+
             return player;
         }
 
@@ -70,34 +74,38 @@
             {
                 secondPlayer.Name = "computer";
             }
+
             return secondPlayer;
         }
 
-        private eGameConfig playGame(Player i_FirstPlayer, Player i_SecondPlayer, GameBoard i_MemoGameBoard)
+        private eGameConfig playGame(Player i_FirstPlayer, Player i_SecondPlayer,
+                                     GameBoard i_MemoGameBoard)
         {
             eGameConfig gameStatus = eGameConfig.CountinueGame;
 
-            while (gameStatus != eGameConfig.EndGame && 
+            while (gameStatus != eGameConfig.EndGame &&
                    gameStatus != eGameConfig.BoardFull)
             {
                 i_FirstPlayer.IsMyTurn = true;
-                while (gameStatus != eGameConfig.EndGame && 
+                while (gameStatus != eGameConfig.EndGame &&
                        i_FirstPlayer.IsMyTurn)
                 {
                     gameStatus = PlayerTurn(i_FirstPlayer, i_MemoGameBoard);
                 }
+
                 i_SecondPlayer.IsMyTurn = true;
-                while ( gameStatus != eGameConfig.EndGame &&
+                while (gameStatus != eGameConfig.EndGame &&
                         gameStatus != eGameConfig.BoardFull && i_SecondPlayer.IsMyTurn)
                 {
                     gameStatus = PlayerTurn(i_SecondPlayer, i_MemoGameBoard);
                 }
+
                 if (gameStatus != eGameConfig.EndGame)
                 {
                     gameStatus = i_MemoGameBoard.IsBoardFull();
                 }
             }
-            
+
             return gameStatus;
         }
 
@@ -105,7 +113,6 @@
         {
             i_Player.FirstCard.Initialize();
             i_Player.SecondCard.Initialize();
-
             eGameConfig gameStatus = i_MemoGameBoard.IsBoardFull();
 
             if (gameStatus == eGameConfig.CountinueGame)
@@ -116,8 +123,9 @@
                 }
                 else
                 {
-                   gameStatus = performHumanTurn(i_Player, i_MemoGameBoard);
+                    gameStatus = performHumanTurn(i_Player, i_MemoGameBoard);
                 }
+
                 if (gameStatus == eGameConfig.CountinueGame)
                 {
                     Ex02.ConsoleUtils.Screen.Clear();
@@ -151,7 +159,7 @@
                 gameStatus = eGameConfig.EndGame;
             }
             else
-            { 
+            {
                 Ex02.ConsoleUtils.Screen.Clear();
                 i_MemoGameBoard.UpdateBoard(i_Player.FirstCard, true);
                 r_UIController.PrintBoard(i_MemoGameBoard);
@@ -178,3 +186,4 @@
         }
     }
 }
+

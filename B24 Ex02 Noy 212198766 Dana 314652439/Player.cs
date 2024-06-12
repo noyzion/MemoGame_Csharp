@@ -43,17 +43,19 @@ namespace Exercise02
 
         private bool findMatchingCards(GameLogic i_GameLogic)
         {
+            bool isMatch = false;
+
             foreach (KeyValuePair<int, List<int[]>> pair in i_GameLogic.RememberValues)
             {
                 if (pair.Value.Count == 2)
                 {
                     m_FirstCard = pair.Value[0];
                     m_SecondCard = pair.Value[1];
-                    return true;
+                    isMatch = true;
                 }
             }
 
-            return false;
+            return isMatch;
         }
 
         private void chooseRandomCards(GameBoard i_Board)
@@ -92,7 +94,6 @@ namespace Exercise02
 
             while (isOpenCell)
             {
-
                 i_Card[0] = random.Next(i_Board.Width);
                 i_Card[1] = random.Next(i_Board.Height);
                 isOpenCell = i_Board.IsCellIsOpen(i_Card);
