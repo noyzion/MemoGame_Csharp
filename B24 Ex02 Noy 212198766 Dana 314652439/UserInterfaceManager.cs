@@ -1,4 +1,4 @@
-﻿namespace Exercise02
+namespace Exercise02
 {
     public class UserInterfaceManager
     {
@@ -87,15 +87,13 @@
                    gameStatus != eGameConfig.BoardFull)
             {
                 i_FirstPlayer.IsMyTurn = true;
-                while (gameStatus != eGameConfig.EndGame &&
-                       i_FirstPlayer.IsMyTurn)
+                while (checkIfMyTurn(i_FirstPlayer,gameStatus))
                 {
                     gameStatus = PlayerTurn(i_FirstPlayer, i_MemoGameBoard);
                 }
 
                 i_SecondPlayer.IsMyTurn = true;
-                while (gameStatus != eGameConfig.EndGame &&
-                        gameStatus != eGameConfig.BoardFull && i_SecondPlayer.IsMyTurn)
+                while (checkIfMyTurn(i_SecondPlayer, gameStatus))
                 {
                     gameStatus = PlayerTurn(i_SecondPlayer, i_MemoGameBoard);
                 }
@@ -109,6 +107,11 @@
             return gameStatus;
         }
 
+        private bool checkIfMyTurn(Player i_Player, eGameConfig i_GameStatus)
+        {
+            return (i_GameStatus != eGameConfig.EndGame &&
+                    i_GameStatus != eGameConfig.BoardFull && i_Player.IsMyTurn);
+        }
         public eGameConfig PlayerTurn(Player i_Player, GameBoard i_MemoGameBoard)
         {
             i_Player.FirstCard.Initialize();
